@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earth's Memory 検索 — Solisium Compendium</title>
+  <meta name="description" content="Throne and Liberty Earth's Memoryクイズ全287問の正誤を即座に確認できる日本語検索ツール">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+JP:wght@300;400;500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <style>
+    :root {
+      --void:        #0a0d14;
+      --void-2:      #11151f;
+      --void-3:      #161c28;
+      --brass:       #c9a15c;
+      --brass-bright:#f0cf8e;
+      --brass-dim:   #7a6238;
+      --indigo:      #7c6ce8;
+      --indigo-bright:#ab9dff;
+      --parchment:   #ece1c6;
+      --parchment-dim:#a89f86;
+      --parchment-faint:#7a6e62;
+      --ember:       #ff4f3f;
+      --true:        #52d98a;
+      --true-bg:     rgba(82,217,138,.10);
+      --true-bd:     rgba(82,217,138,.30);
+      --false:       #e86e6e;
+      --false-bg:    rgba(232,110,110,.10);
+      --false-bd:    rgba(232,110,110,.30);
+      --line:        rgba(201,161,92,0.18);
+      --line-soft:   rgba(201,161,92,0.09);
+      --radius: 3px;
+
+      --font-display: 'Cinzel', 'Times New Roman', serif;
+      --font-body:    'Crimson Pro', Georgia, serif;
+      --font-jp:      'Noto Serif JP', serif;
+      --font-mono:    'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { font-size:16px; scroll-behavior:smooth; color-scheme: dark; }
+    body {
+      background: var(--void);
+      color: var(--parchment);
+      font-family: var(--font-jp);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a, button, input { font-family: inherit; }
+
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(201,161,92,.55) 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 12%, rgba(255,255,255,.30) 0%,transparent 100%),
+        radial-gradient(1px 1px at 34% 72%, rgba(201,161,92,.40) 0%,transparent 100%),
+        radial-gradient(1px 1px at 70% 55%, rgba(255,255,255,.22) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 30%, rgba(201,161,92,.35) 0%,transparent 100%),
+        radial-gradient(2px 2px at 22% 85%, rgba(201,161,92,.18) 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 78%, rgba(255,255,255,.28) 0%,transparent 100%),
+        radial-gradient(1px 1px at 47%  5%, rgba(255,255,255,.35) 0%,transparent 100%),
+        radial-gradient(1px 1px at 78% 90%, rgba(201,161,92,.30) 0%,transparent 100%),
+        radial-gradient(1px 1px at  6% 45%, rgba(255,255,255,.20) 0%,transparent 100%);
+    }
+    body::after {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%,transparent 30%,rgba(10,13,20,.75) 100%);
+    }
+
+    /* ══════════════════ SITE CHROME (shared with index.html) ══════════════════ */
+    .site-header {
+      position: relative; z-index: 2;
+    }
+    .site-header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 18px 14px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .site-brand { text-decoration: none; display: block; font-family: var(--font-body); }
+    .site-brand-eyebrow {
+      display: block;
+      font-style: italic;
+      font-size: 0.72rem;
+      color: var(--brass);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .site-brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      color: var(--parchment);
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+    .site-brand-title .amp { color: var(--brass); }
+
+    /* Tab bar — deliberately bold so the page-switcher reads as navigation
+       at a glance, not as a pair of quiet header links. */
+    .site-tabbar {
+      display: flex;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 18px;
+      gap: 6px;
+      border-top: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+    .site-tabbar::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--brass), transparent 70%);
+    }
+    .site-tab {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 22px;
+      text-decoration: none;
+      color: var(--parchment-dim);
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.18s;
+    }
+    .site-tab-icon {
+      font-size: 1.15rem;
+      line-height: 1;
+      filter: grayscale(0.6) opacity(0.7);
+      transition: filter 0.18s;
+    }
+    .site-tab:hover { color: var(--parchment); background: rgba(201,161,92,0.05); }
+    .site-tab.active {
+      color: var(--brass-bright);
+      border-bottom-color: var(--brass);
+      background: linear-gradient(180deg, rgba(201,161,92,0.10), transparent);
+    }
+    .site-tab.active .site-tab-icon { filter: none; }
+    @media (max-width: 480px) {
+      .site-tab { padding: 12px 14px; font-size: 0.74rem; }
+    }
+
+    .site-footer {
+      text-align: center;
+      font-size: 0.68rem;
+      font-style: italic;
+      color: var(--parchment-dim);
+      opacity: 0.6;
+      padding: 30px 18px 40px;
+      font-family: var(--font-body);
+    }
+
+    /* ══════════════════ PAGE ══════════════════ */
+    .wrap { position:relative; z-index:1; max-width:880px; margin:0 auto; padding:0 1.1rem; }
+
+    header.qa-hero { text-align:center; padding:2.4rem 1rem 0; }
+    .orn { display:flex; align-items:center; justify-content:center; gap:.9rem; margin-bottom:1.4rem; }
+    .orn-line { flex:1; max-width:110px; height:1px; background:linear-gradient(90deg,transparent,var(--brass),transparent); }
+    .orn-dia  { width:7px; height:7px; background:var(--brass); transform:rotate(45deg); flex-shrink:0; }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 5vw, 2.6rem);
+      font-weight: 700; letter-spacing:.06em;
+      background: linear-gradient(175deg, var(--brass-bright) 0%, var(--brass) 45%, #7a5c18 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      line-height:1.15; margin-bottom:.55rem;
+    }
+    .subtitle { font-size:.82rem; font-weight:300; letter-spacing:.35em; color:var(--parchment-dim); margin-bottom:.35rem; }
+    .attr { font-size:.65rem; color:var(--parchment-faint); letter-spacing:.08em; font-family: var(--font-body); }
+    .attr a { color:var(--brass); text-decoration:none; opacity:.65; }
+    .attr a:hover { opacity:1; }
+
+    /* ── search ── */
+    .search-wrap { padding:1.8rem 0 1.2rem; }
+    .search-row { position:relative; }
+    .ico-search {
+      position:absolute; left:1.1rem; top:50%; transform:translateY(-50%);
+      color:var(--brass); opacity:.6; pointer-events:none; font-size:1rem; line-height:1;
+    }
+    #q {
+      width:100%; background:var(--void-2); border:1px solid var(--line);
+      border-radius:var(--radius); padding:.9rem 2.8rem .9rem 2.8rem;
+      color:var(--parchment); font-family: var(--font-jp); font-size:.95rem;
+      outline:none; transition:border-color .25s,box-shadow .25s; -webkit-appearance:none;
+    }
+    #q::placeholder { color:var(--parchment-dim); opacity:.6; }
+    #q:focus { border-color:rgba(201,161,92,.55); box-shadow:0 0 0 2px rgba(201,161,92,.08),0 0 18px rgba(201,161,92,.08); }
+    #clr {
+      position:absolute; right:1rem; top:50%; transform:translateY(-50%);
+      background:none; border:none; color:var(--parchment-dim); cursor:pointer;
+      font-size:1.1rem; line-height:1; padding:.25rem;
+      opacity:0; pointer-events:none; transition:opacity .2s,color .2s;
+    }
+    #clr.show { opacity:1; pointer-events:auto; }
+    #clr:hover { color:var(--brass); }
+    .meta { display:flex; align-items:center; justify-content:space-between; margin-top:.6rem; font-size:.7rem; }
+    #cnt { color:var(--parchment-dim); font-family: var(--font-body); }
+    .cnt-num { color:var(--brass); font-weight:600; }
+
+    /* ── cards ── */
+    #res { display:flex; flex-direction:column; gap:.55rem; padding-bottom:5rem; }
+    @keyframes up { from{opacity:0;transform:translateY(7px)} to{opacity:1;transform:translateY(0)} }
+    .card {
+      background:var(--void-2); border:1px solid rgba(255,255,255,.09);
+      border-radius:var(--radius); display:grid; grid-template-columns:56px 1fr;
+      gap:0 .9rem; align-items:stretch; overflow:hidden;
+      animation:up .3s ease both; transition:box-shadow .2s,border-color .2s;
+    }
+    .card:hover { border-color:rgba(201,161,92,.18); box-shadow:0 2px 18px rgba(0,0,0,.35); }
+    .badge {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:.8rem .3rem; gap:.15rem;
+      font-family: var(--font-display); font-weight:600; border-right:1px solid;
+    }
+    .badge .sym { font-size:1.45rem; line-height:1; }
+    .badge .lbl { font-size:.5rem; letter-spacing:.06em; text-transform:uppercase; }
+    .card.T .badge { background:var(--true-bg);  border-color:var(--true-bd);  color:var(--true);  }
+    .card.F .badge { background:var(--false-bg); border-color:var(--false-bd); color:var(--false); }
+    .body  { padding:.75rem .9rem .75rem 0; min-width:0; }
+    .qja   { font-size:.92rem; line-height:1.75; color:var(--parchment); margin-bottom:.3rem; word-break:break-all; }
+    .qen   { font-size:.72rem; color:var(--parchment-dim); line-height:1.55; font-family: var(--font-display); letter-spacing:.02em; word-break:break-all; margin-bottom:.25rem; }
+    .foot  { display:flex; align-items:center; justify-content:space-between; margin-top:.4rem; }
+    .qid   { font-size:.66rem; color:var(--parchment-dim); font-family: var(--font-mono); opacity:.75; }
+    .cat   { font-size:.63rem; color:var(--parchment-dim); border:1px solid rgba(168,159,134,.35); padding:.1rem .5rem; border-radius:2px; letter-spacing:.04em; font-family: var(--font-display); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px; }
+
+    /* ── states ── */
+    .empty { text-align:center; padding:4rem 1rem; color:var(--parchment-dim); }
+    .empty .sym2 { font-size:2.5rem; margin-bottom:.9rem; opacity:.4; }
+    .empty p { font-size:.85rem; line-height:1.8; }
+    .loading { text-align:center; padding:3.5rem; color:var(--brass); font-family: var(--font-display); font-size:.75rem; letter-spacing:.25em; }
+    @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+    .loading span { animation:blink 1.4s infinite; }
+    .loading span:nth-child(2) { animation-delay:.2s; }
+    .loading span:nth-child(3) { animation-delay:.4s; }
+
+    /* ── lang toggle ── */
+    .lang-toggle {
+      display:flex; border:1px solid var(--line); border-radius:var(--radius);
+      overflow:hidden; flex-shrink:0;
+    }
+    .lang-btn {
+      background:none; border:none; cursor:pointer;
+      font-family: var(--font-display); font-size:.68rem; font-weight:600;
+      letter-spacing:.12em; padding:.28rem .75rem; color:var(--parchment-dim);
+      transition:background .18s,color .18s;
+    }
+    .lang-btn.active { background:var(--brass); color:var(--void); }
+    .lang-btn:not(.active):hover { color:var(--brass); }
+    .lang-sep { width:1px; background:var(--line); flex-shrink:0; }
+
+    @media (max-width:480px) {
+      h1 { font-size:1.35rem; }
+      .card { grid-template-columns:46px 1fr; gap:0 .7rem; }
+      .badge .sym { font-size:1.25rem; }
+      .badge .lbl { font-size:.45rem; }
+      .qja { font-size:.82rem; }
+      .body { padding:.65rem .7rem .65rem 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="index.html" class="site-brand">
+      <span class="site-brand-eyebrow">ソリシウム — Throne and Liberty</span>
+      <span class="site-brand-title">SOLISIUM <span class="amp">/</span> COMPENDIUM</span>
+    </a>
+  </div>
+  <nav class="site-tabbar" aria-label="ページ切替">
+    <a href="index.html" class="site-tab"><span class="site-tab-icon">🌗</span>暦 & 強化計算</a>
+    <a href="qa.html" class="site-tab active"><span class="site-tab-icon">📜</span>記憶の書庫</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <header class="qa-hero">
+    <div class="orn">
+      <div class="orn-line"></div>
+      <div class="orn-dia"></div>
+      <div class="orn-line"></div>
+    </div>
+    <h1>Earth's Memory</h1>
+    <p class="subtitle">記 憶 の 書 庫</p>
+    <p class="attr">Throne and Liberty — クイズ設問検索 &nbsp;|&nbsp; 原著コンパイル: Kninebeat 氏</p>
+  </header>
+
+  <section class="search-wrap">
+    <div class="search-row">
+      <span class="ico-search" aria-hidden="true">⚲</span>
+      <input id="q" type="search" placeholder="記憶を探す…　日本語・英語どちらでも" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="クイズ検索">
+      <button id="clr" aria-label="検索をクリア">✕</button>
+    </div>
+    <div class="meta">
+      <span id="cnt" aria-live="polite"></span>
+      <div class="lang-toggle" role="group" aria-label="表示言語">
+        <button type="button" class="lang-btn active" id="btn-ja" data-lang="ja">JA</button>
+        <div class="lang-sep"></div>
+        <button type="button" class="lang-btn" id="btn-en" data-lang="en">EN</button>
+      </div>
+    </div>
+  </section>
+
+  <main id="res" aria-label="検索結果">
+    <div class="loading" aria-label="読み込み中">LOADING<span>.</span><span>.</span><span>.</span></div>
+  </main>
+
+</div>
+
+<footer class="site-footer">
+  原著コンパイル: Kninebeat 氏 &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--brass);opacity:.8;">← 暦・強化計算に戻る</a>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var qEl  = document.getElementById('q');
+  var clr  = document.getElementById('clr');
+  var res  = document.getElementById('res');
+  var cnt  = document.getElementById('cnt');
+
+  var data = [];
+  var fuse = null;
+  var timer;
+  var lang = 'ja';
+
+  function el(tag, cls) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    return e;
+  }
+  function txt(tag, cls, text) {
+    var e = el(tag, cls);
+    e.textContent = text;
+    return e;
+  }
+
+  function makeFuse() {
+    fuse = new Fuse(data, {
+      keys: lang === 'ja'
+        ? [{ name: 'text_ja', weight: 0.75 }, { name: 'text_en', weight: 0.25 }]
+        : [{ name: 'text_en', weight: 0.75 }, { name: 'text_ja', weight: 0.25 }],
+      threshold: 0.42,
+      includeScore: true,
+      minMatchCharLength: 2,
+      ignoreLocation: true,
+      distance: 800
+    });
+  }
+
+  function makeCard(item, delay) {
+    var isTrue = item.answer === 'TRUE';
+    var article = el('article', 'card ' + (isTrue ? 'T' : 'F'));
+    article.style.animationDelay = delay + 's';
+
+    var badge = el('div', 'badge');
+    var sym = txt('span', 'sym', isTrue ? '✓' : '✗');
+    var lbl = txt('span', 'lbl', isTrue ? 'TRUE' : 'FALSE');
+    badge.appendChild(sym);
+    badge.appendChild(lbl);
+
+    var body = el('div', 'body');
+    var primary = lang === 'en' ? (item.text_en) : (item.text_ja || item.text_en);
+    var secondary = lang === 'en' ? (item.text_ja || '') : item.text_en;
+    var qja = txt('p', 'qja', primary);
+    body.appendChild(qja);
+
+    if (secondary) {
+      var qen = txt('p', 'qen', secondary);
+      body.appendChild(qen);
+    }
+
+    var foot = el('div', 'foot');
+    var qid  = txt('span', 'qid', '#' + String(item.id).padStart(3, '0'));
+    var cat  = txt('span', 'cat', item.category);
+    foot.appendChild(qid);
+    foot.appendChild(cat);
+    body.appendChild(foot);
+
+    article.appendChild(badge);
+    article.appendChild(body);
+    return article;
+  }
+
+  function render(items) {
+    while (res.firstChild) res.removeChild(res.firstChild);
+
+    if (!items.length) {
+      var empty = el('div', 'empty');
+      var sym2 = el('div', 'sym2');
+      sym2.textContent = '📜';
+      var msg = el('p');
+      msg.textContent = '該当する記憶が見つかりませんでした。別のキーワードでお試しください。';
+      empty.appendChild(sym2);
+      empty.appendChild(msg);
+      res.appendChild(empty);
+      cnt.textContent = '';
+      var strong0 = el('strong', 'cnt-num');
+      strong0.textContent = '0';
+      cnt.prepend(strong0);
+      cnt.appendChild(document.createTextNode(' 件'));
+      return;
+    }
+
+    var frag = document.createDocumentFragment();
+    items.forEach(function (item, i) {
+      frag.appendChild(makeCard(item, Math.min(i, 15) * 0.022));
+    });
+    res.appendChild(frag);
+
+    cnt.textContent = '';
+    var strong = el('strong', 'cnt-num');
+    strong.textContent = String(items.length);
+    cnt.appendChild(strong);
+    cnt.appendChild(document.createTextNode(' / ' + data.length + ' 件'));
+  }
+
+  function doSearch(q) {
+    if (!q) { render(data); return; }
+    var hits = fuse.search(q);
+    render(hits.map(function (r) { return r.item; }));
+  }
+
+  function setLang(newLang) {
+    if (lang === newLang) return;
+    lang = newLang;
+    document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    qEl.placeholder = lang === 'ja'
+      ? '記憶を探す…　日本語・英語どちらでも'
+      : 'Search memories…  English or Japanese';
+    makeFuse();
+    doSearch(qEl.value.trim());
+  }
+
+  document.getElementById('btn-ja').addEventListener('click', function () { setLang('ja'); });
+  document.getElementById('btn-en').addEventListener('click', function () { setLang('en'); });
+
+  qEl.addEventListener('input', function () {
+    var v = qEl.value.trim();
+    clr.classList.toggle('show', v.length > 0);
+    clearTimeout(timer);
+    timer = setTimeout(function () { doSearch(v); }, 140);
+  });
+
+  clr.addEventListener('click', function () {
+    qEl.value = '';
+    clr.classList.remove('show');
+    render(data);
+    qEl.focus();
+  });
+
+  fetch('./earths_memory_qa.json')
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (json) {
+      if (!Array.isArray(json)) throw new Error('invalid data');
+      data = json;
+      makeFuse();
+      render(data);
+    })
+    .catch(function () {
+      while (res.firstChild) res.removeChild(res.firstChild);
+      var d = el('div', 'empty');
+      var p = el('p');
+      p.textContent = 'データの読み込みに失敗しました。earths_memory_qa.json が同じディレクトリにあるか確認してください。';
+      d.appendChild(p);
+      res.appendChild(d);
+    });
+
+}());
+</script>
+</body>
+</html>

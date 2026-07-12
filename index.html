@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solisium Almanac — Throne and Liberty</title>
+<title>Solisium Compendium — Throne and Liberty</title>
+<meta name="description" content="Throne and Liberty 非公式攻略ツール集 — 昼夜暦、ギア強化(Watermark)計算、Earth's Memoryクイズ検索">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,6 +21,7 @@
     --parchment:   #ece1c6;
     --parchment-dim:#a89f86;
     --ember:       #ff4f3f;
+    --green:       #6bc98a;
     --line:        rgba(201,161,92,0.18);
     --line-soft:   rgba(201,161,92,0.09);
 
@@ -29,9 +31,7 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { color-scheme: dark; }
-
   body {
     font-family: var(--font-body);
     background: var(--void);
@@ -41,35 +41,25 @@
       radial-gradient(ellipse 900px 500px at 50% -10%, rgba(124,108,232,0.10), transparent 60%),
       radial-gradient(ellipse 700px 400px at 100% 100%, rgba(201,161,92,0.06), transparent 60%);
   }
+  a, button, input { font-family: inherit; }
 
-  .container {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 28px 18px 40px;
+  /* ══════════════════ SITE CHROME (shared with qa.html) ══════════════════ */
+  .site-header {
+    position: relative;
   }
-
-  a, button { font-family: inherit; }
-
-  /* ── Header ─────────────────────────────────────────── */
-  .header {
+  .site-header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 18px 14px;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 14px;
-    padding-bottom: 20px;
-    margin-bottom: 26px;
-    border-bottom: 1px solid var(--line);
-    position: relative;
   }
-  .header::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 1px;
-    background: linear-gradient(90deg, var(--brass), transparent 70%);
-  }
-  .brand-eyebrow {
+  .site-brand { text-decoration: none; display: block; }
+  .site-brand-eyebrow {
+    display: block;
     font-family: var(--font-body);
     font-style: italic;
     font-size: 0.72rem;
@@ -77,170 +67,104 @@
     letter-spacing: 0.08em;
     margin-bottom: 4px;
   }
-  .brand-title {
+  .site-brand-title {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     letter-spacing: 0.05em;
     color: var(--parchment);
     text-transform: uppercase;
     line-height: 1.15;
   }
-  .brand-title .amp { color: var(--brass); }
+  .site-brand-title .amp { color: var(--brass); }
 
-  .controls {
+  /* Tab bar — deliberately bold so the page-switcher reads as navigation
+     at a glance, not as a pair of quiet header links. */
+  .site-tabbar {
     display: flex;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 18px;
     gap: 6px;
-    align-items: center;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line);
+    position: relative;
   }
-  .control-group {
-    display: flex;
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .btn {
-    background: var(--void-2);
-    border: none;
-    color: var(--parchment-dim);
-    padding: 6px 13px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.18s;
-    border-right: 1px solid var(--line);
-    font-family: var(--font-body);
-  }
-  .control-group .btn:last-child { border-right: none; }
-  .btn:hover { color: var(--parchment); background: var(--void-3); }
-  .btn.active {
-    background: rgba(201,161,92,0.16);
-    color: var(--brass-bright);
-  }
-
-  /* ── Section label ──────────────────────────────────── */
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--font-display);
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--brass);
-    margin-bottom: 14px;
-  }
-  .section-label::after {
+  .site-tabbar::after {
     content: '';
-    flex: 1;
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
     height: 1px;
-    background: linear-gradient(90deg, var(--line), transparent);
+    background: linear-gradient(90deg, var(--brass), transparent 70%);
   }
-  .section-label .sub-jp {
-    font-family: var(--font-body);
-    font-style: italic;
-    font-weight: 400;
-    color: var(--parchment-dim);
-    letter-spacing: 0;
-    text-transform: none;
-    font-size: 0.72rem;
-  }
-
-  /* ── World Clock (brass pocket watches) ────────────────── */
-  .wc-section { margin-bottom: 30px; }
-
-  .watch-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-  }
-  @media (max-width: 640px) {
-    .watch-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  }
-  @media (max-width: 380px) {
-    .watch-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  .watch-item {
+  .site-tab {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 10px 4px 12px;
-    background: var(--void-2);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    gap: 9px;
+    padding: 13px 22px;
+    text-decoration: none;
+    color: var(--parchment-dim);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.18s;
   }
-  .watch-item:hover {
-    border-color: var(--brass-dim);
-    transform: translateY(-1px);
+  .site-tab-icon {
+    font-size: 1.15rem;
+    line-height: 1;
+    filter: grayscale(0.6) opacity(0.7);
+    transition: filter 0.18s;
   }
-  .watch-item.tz-active {
-    border-color: var(--brass);
-    background: linear-gradient(180deg, rgba(201,161,92,0.14), rgba(201,161,92,0.04));
-    box-shadow: 0 0 0 1px rgba(201,161,92,0.25), 0 4px 14px rgba(201,161,92,0.12);
+  .site-tab:hover { color: var(--parchment); background: rgba(201,161,92,0.05); }
+  .site-tab.active {
+    color: var(--brass-bright);
+    border-bottom-color: var(--brass);
+    background: linear-gradient(180deg, rgba(201,161,92,0.10), transparent);
+  }
+  .site-tab.active .site-tab-icon { filter: none; }
+  @media (max-width: 480px) {
+    .site-tab { padding: 12px 14px; font-size: 0.74rem; }
   }
 
-  .watch-canvas { display: block; width: 68px; height: 68px; }
-  @media (max-width: 640px) {
-    .watch-canvas { width: 56px; height: 56px; }
-  }
-
-  .watch-info { text-align: center; line-height: 1.35; }
-  .watch-name {
+  .site-footer {
+    text-align: center;
     font-size: 0.68rem;
-    color: var(--parchment-dim);
-    white-space: nowrap;
-    font-weight: 500;
-  }
-  .watch-item.tz-active .watch-name { color: var(--brass-bright); }
-  .watch-name .flag { font-size: 0.85rem; vertical-align: middle; margin-right: 1px; }
-  .watch-digital {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 500;
-    color: var(--parchment);
-    letter-spacing: 0.02em;
-    margin-top: 2px;
-  }
-  .watch-diff {
-    font-size: 0.6rem;
-    color: var(--parchment-dim);
-    opacity: 0.75;
-  }
-
-  .wc-hint {
-    font-size: 0.72rem;
     font-style: italic;
     color: var(--parchment-dim);
-    margin-top: 12px;
-    text-align: center;
-    line-height: 1.5;
-  }
-  .wc-hint .tz-selected-name {
-    color: var(--brass-bright);
-    font-weight: 600;
-    font-style: normal;
+    opacity: 0.6;
+    padding: 30px 18px 40px;
   }
 
-  /* ── Sky panel (hero) ───────────────────────────────── */
-  .sky-section {
+  /* ══════════════════ HUB LAYOUT ══════════════════ */
+  .hub-main { max-width: 1180px; margin: 0 auto; padding: 26px 18px 10px; }
+  .hub-intro {
+    font-size: 0.82rem;
+    color: var(--parchment-dim);
+    margin-bottom: 22px;
+    line-height: 1.8;
+  }
+  .hub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .hub-grid { grid-template-columns: 1fr; }
+  }
+
+  .widget {
     position: relative;
     background: radial-gradient(ellipse at 50% 0%, var(--void-3), var(--void-2) 70%);
     border: 1px solid var(--line);
     border-radius: 14px;
-    padding: 26px 20px 22px;
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 22px 20px 20px;
     overflow: hidden;
   }
-  .sky-section::before {
+  .widget::before {
     content: '';
     position: absolute;
     top: 0; left: 8%; right: 8%;
@@ -249,757 +173,1328 @@
     opacity: 0.5;
   }
 
-  .live-badge {
-    position: absolute;
-    top: 16px;
-    left: 18px;
+  .widget-header {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .widget-eyebrow {
+    display: block;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    color: var(--ember);
-  }
-  .live-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--ember);
-    box-shadow: 0 0 7px var(--ember);
-    animation: livepulse 1.3s ease-in-out infinite;
-  }
-  @keyframes livepulse {
-    0%, 100% { opacity: 1;   transform: scale(1); }
-    50%      { opacity: 0.25; transform: scale(0.65); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .live-dot { animation: none; }
-  }
-
-  .sky-phase-tag {
-    font-family: var(--font-display);
-    font-size: 0.64rem;
+    font-size: 0.6rem;
     font-weight: 600;
     letter-spacing: 0.16em;
+    color: var(--parchment-dim);
+    margin-bottom: 2px;
+  }
+  .widget-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.04em;
+    color: var(--parchment);
+  }
+
+  /* ══════════════════ DAYNIGHT WIDGET ══════════════════ */
+  .dn-controls { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dn-control-group {
+    display: flex;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .dn-btn {
+    background: var(--void-2);
+    border: none;
+    color: var(--parchment-dim);
+    padding: 5px 11px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.18s;
+    border-right: 1px solid var(--line);
+  }
+  .dn-control-group .dn-btn:last-child { border-right: none; }
+  .dn-btn:hover { color: var(--parchment); background: var(--void-3); }
+  .dn-btn.active { background: rgba(201,161,92,0.16); color: var(--brass-bright); }
+
+  .dn-sky {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 18px 4px 6px;
+    position: relative;
+  }
+  .dn-live-badge {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--ember);
+  }
+  .dn-live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 6px var(--ember);
+    animation: dn-livepulse 1.3s ease-in-out infinite;
+  }
+  @keyframes dn-livepulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.25; transform: scale(0.65); }
+  }
+  @media (prefers-reduced-motion: reduce) { .dn-live-dot { animation: none; } }
+
+  .dn-phase-tag {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--parchment-dim);
     margin-bottom: 8px;
+    margin-top: 10px;
   }
-  .sky-phase-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
-  }
-  .sky-icon { font-size: 1.7rem; line-height: 1; }
-  .sky-phase-name {
+  .dn-phase-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .dn-icon { font-size: 1.4rem; line-height: 1; }
+  .dn-phase-name {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.7rem;
+    font-size: 1.4rem;
     letter-spacing: 0.06em;
   }
-  .sky-phase-name.day   { color: var(--brass-bright); }
-  .sky-phase-name.night { color: var(--indigo-bright); }
+  .dn-phase-name.day   { color: var(--brass-bright); }
+  .dn-phase-name.night { color: var(--indigo-bright); }
 
-  .sky-countdown-title {
-    font-size: 0.86rem;
+  .dn-countdown-title {
+    font-size: 0.78rem;
     font-weight: 600;
     color: var(--parchment);
     margin-top: 6px;
     letter-spacing: 0.02em;
   }
-  .sky-countdown-num {
+  .dn-countdown-num {
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: clamp(2.4rem, 12vw, 3.4rem);
+    font-size: clamp(2rem, 7vw, 2.6rem);
     color: #fff;
     letter-spacing: 0.01em;
     line-height: 1.15;
     font-variant-numeric: tabular-nums;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
-  /* Sky arc: horizontal sun/moon path */
-  .sky-arc-wrap {
-    width: 100%;
-    max-width: 420px;
-    margin: 4px 0 6px;
-  }
-  .sky-arc-svg { width: 100%; height: auto; display: block; overflow: visible; }
-  .sky-arc-marker-emoji {
-    font-size: 13px;
-    text-anchor: middle;
-    dominant-baseline: central;
-  }
+  .dn-arc-wrap { width: 100%; max-width: 340px; margin: 4px 0 4px; }
+  .dn-arc-svg { width: 100%; height: auto; display: block; overflow: visible; }
 
-  .sky-elapsed {
+  .dn-elapsed {
     font-family: var(--font-mono);
-    font-size: 0.76rem;
+    font-size: 0.72rem;
     color: var(--parchment-dim);
-    margin-top: 4px;
+    margin-top: 2px;
     letter-spacing: 0.03em;
   }
-  .sky-elapsed b { color: var(--parchment); font-weight: 600; }
+  .dn-elapsed b { color: var(--parchment); font-weight: 600; }
 
-  .sky-legend {
-    display: flex;
-    gap: 20px;
-    margin-top: 16px;
-  }
-  .sky-legend-item {
+  .dn-legend { display: flex; gap: 18px; margin-top: 12px; }
+  .dn-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.66rem; color: var(--parchment-dim); }
+  .dn-legend-swatch { width: 9px; height: 9px; border-radius: 2px; }
+
+  .dn-section-label {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.68rem;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 18px 0 10px;
+  }
+  .dn-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--line), transparent);
+  }
+  .dn-sub-jp {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
     color: var(--parchment-dim);
-  }
-  .sky-legend-swatch {
-    width: 10px; height: 10px;
-    border-radius: 2px;
-  }
-
-  /* ── Itinerary (timeline) ───────────────────────────── */
-  .itin-section {
-    background: var(--void-2);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 18px 18px 6px;
-    margin-bottom: 26px;
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.68rem;
   }
 
-  .itin-list {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .itin-row {
+  .dn-itin-list { display: flex; flex-direction: column; }
+  .dn-itin-row {
     display: grid;
-    grid-template-columns: 62px 20px 1fr auto;
+    grid-template-columns: 58px 18px 1fr auto;
     align-items: center;
-    gap: 10px;
-    padding: 11px 8px;
+    gap: 8px;
+    padding: 9px 6px;
     border-bottom: 1px solid var(--line-soft);
     border-radius: 6px;
   }
-  .itin-row:last-child { border-bottom: none; }
-
-  .itin-row.is-now {
+  .dn-itin-row:last-child { border-bottom: none; }
+  .dn-itin-row.is-now {
     background: linear-gradient(90deg, rgba(255,79,63,0.10), transparent 75%);
     border-left: 2px solid var(--ember);
-    padding-left: 6px;
+    padding-left: 4px;
   }
-
-  .itin-time {
+  .dn-itin-time {
     font-family: var(--font-mono);
     font-weight: 600;
-    font-size: 0.92rem;
+    font-size: 0.84rem;
     color: var(--parchment);
     letter-spacing: 0.02em;
   }
-  .itin-now-tag {
+  .dn-itin-now-tag {
     font-family: var(--font-mono);
-    font-size: 0.56rem;
+    font-size: 0.52rem;
     font-weight: 700;
     color: var(--ember);
     letter-spacing: 0.06em;
     display: block;
-    margin-top: 1px;
   }
-  .itin-icon { font-size: 1rem; text-align: center; }
-  .itin-phase {
-    font-weight: 600;
-    font-size: 0.86rem;
-    font-family: var(--font-body);
-  }
-  .itin-phase.day   { color: var(--brass-bright); }
-  .itin-phase.night { color: var(--indigo-bright); }
-  .itin-duration {
-    font-size: 0.7rem;
+  .dn-itin-icon { font-size: 0.9rem; text-align: center; }
+  .dn-itin-phase { font-weight: 600; font-size: 0.8rem; }
+  .dn-itin-phase.day   { color: var(--brass-bright); }
+  .dn-itin-phase.night { color: var(--indigo-bright); }
+  .dn-itin-duration {
+    font-size: 0.64rem;
     color: var(--parchment-dim);
     text-align: right;
     white-space: nowrap;
     font-family: var(--font-mono);
   }
 
-  /* ── Footer ─────────────────────────────────────────── */
-  .footer {
-    text-align: center;
-    font-size: 0.68rem;
+  .dn-basis {
+    font-size: 0.66rem;
     font-style: italic;
     color: var(--parchment-dim);
-    opacity: 0.6;
-    padding-top: 4px;
+    margin-top: 14px;
+    text-align: center;
   }
+  .dn-basis b { color: var(--brass-bright); font-weight: 600; font-style: normal; }
+
+  /* ══════════════════ WATERMARK WIDGET ══════════════════ */
+  .wm-source {
+    font-size: 0.68rem;
+    color: var(--parchment-dim);
+    margin: 4px 0 16px;
+    line-height: 1.5;
+  }
+
+  .wm-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 16px;
+    gap: 2px;
+  }
+  .wm-tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--parchment-dim);
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    font-family: var(--font-body);
+  }
+  .wm-tab-btn:hover { color: var(--parchment); }
+  .wm-tab-btn.active { color: var(--brass-bright); border-bottom-color: var(--brass); }
+
+  .wm-tab-panel { display: none; }
+  .wm-tab-panel.active { display: block; }
+
+  .wm-card {
+    background: var(--void-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 15px;
+    margin-bottom: 12px;
+  }
+  .wm-card-title {
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: var(--parchment-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+  }
+
+  .wm-hint {
+    background: var(--void-3);
+    border-left: 3px solid var(--indigo);
+    border-radius: 0 6px 6px 0;
+    padding: 9px 11px;
+    font-size: 0.76rem;
+    color: var(--parchment-dim);
+    line-height: 1.6;
+  }
+  .wm-hint strong { color: var(--parchment); }
+
+  .wm-input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 420px) { .wm-input-grid { grid-template-columns: 1fr; } }
+
+  .wm-field label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--parchment-dim);
+    margin-bottom: 4px;
+  }
+
+  .widget-wm input[type="number"] {
+    width: 100%;
+    background: var(--void-3);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--parchment);
+    padding: 7px 9px;
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .widget-wm input[type="number"]:focus { border-color: var(--brass); }
+
+  .wm-range-row { margin-bottom: 10px; }
+  .wm-range-row label { font-size: 0.7rem; color: var(--parchment-dim); display: block; margin-bottom: 5px; }
+  .wm-range-row label strong { color: var(--brass-bright); font-size: 0.9rem; font-family: var(--font-mono); }
+  .widget-wm input[type="range"] { width: 100%; accent-color: var(--brass); cursor: pointer; }
+
+  .wm-btn {
+    background: var(--brass);
+    color: var(--void);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    font-family: var(--font-body);
+  }
+  .wm-btn:hover { opacity: 0.85; }
+  .wm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .wm-display { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .wm-big { font-family: var(--font-mono); font-size: 2.8rem; font-weight: 800; color: var(--brass-bright); line-height: 1; }
+  .wm-caption { font-size: 0.7rem; color: var(--parchment-dim); margin-top: 2px; }
+
+  .wm-prob-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+  .wm-prob-table th, .wm-prob-table td { padding: 6px 8px; border-bottom: 1px solid var(--line-soft); font-family: var(--font-mono); }
+  .wm-prob-table th { color: var(--parchment-dim); font-weight: 500; font-size: 0.64rem; text-transform: uppercase; font-family: var(--font-body); }
+  .wm-prob-table tbody tr:last-child td { border-bottom: none; }
+  .wm-prob-table td:not(:first-child) { text-align: right; }
+
+  .wm-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  @media (max-width: 380px) { .wm-stats-grid { grid-template-columns: 1fr 1fr; } }
+  .wm-stat-box { background: var(--void-3); border-radius: 6px; padding: 10px; text-align: center; }
+  .wm-stat-value { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--brass-bright); line-height: 1.1; }
+  .wm-stat-label { font-size: 0.64rem; color: var(--parchment-dim); margin-top: 3px; }
+  .wm-stat-sub { font-size: 0.6rem; color: var(--parchment-dim); opacity: 0.7; margin-top: 2px; }
+
+  #wm-sim-chart { display: block; width: 100%; border-radius: 4px; }
+  .wm-table-wrap { overflow-x: auto; }
+
+  .wm-heat-table { border-collapse: collapse; font-size: 0.68rem; white-space: nowrap; font-family: var(--font-mono); }
+  .wm-heat-table th, .wm-heat-table td { padding: 3px 6px; border: 1px solid var(--line-soft); text-align: center; }
+  .wm-heat-table thead th { background: var(--void-3); font-weight: 600; position: sticky; top: 0; z-index: 1; }
+  .wm-heat-table .wm-col { background: var(--void-3); font-weight: 600; color: var(--parchment); position: sticky; left: 0; z-index: 2; }
+  .wm-heat-table .wm-col-header { background: var(--void-3); position: sticky; left: 0; z-index: 3; }
+
+  .wm-progress { text-align: center; padding: 26px; color: var(--parchment-dim); font-size: 0.82rem; }
+
+  .wm-il-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; font-size: 0.82rem; }
+  .wm-il-cat { width: 100px; color: var(--parchment-dim); }
+  .wm-il-val { font-weight: 600; font-family: var(--font-mono); }
+
+  .wm-bar-cell { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+  .wm-mini-bar { height: 6px; border-radius: 3px; opacity: 0.75; flex-shrink: 0; }
 </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-left">
-      <div class="brand-eyebrow" id="brand-eyebrow">ソリシウム — Throne and Liberty</div>
-      <div class="brand-title">SOLISIUM <span class="amp">/</span> ALMANAC</div>
-    </div>
-    <div class="controls">
-      <div class="control-group">
-        <button class="btn active" id="btn-jp" onclick="setLang('jp')">日本語</button>
-        <button class="btn" id="btn-en" onclick="setLang('en')">EN</button>
-      </div>
-      <div class="control-group">
-        <button class="btn active" id="btn-jst" onclick="setTZ('jst')">JST</button>
-        <button class="btn" id="btn-local" onclick="setTZ('local')">LOCAL</button>
-      </div>
-    </div>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="index.html" class="site-brand">
+      <span class="site-brand-eyebrow">ソリシウム — Throne and Liberty</span>
+      <span class="site-brand-title">SOLISIUM <span class="amp">/</span> COMPENDIUM</span>
+    </a>
   </div>
+  <nav class="site-tabbar" aria-label="ページ切替">
+    <a href="index.html" class="site-tab active"><span class="site-tab-icon">🌗</span>暦 & 強化計算</a>
+    <a href="qa.html" class="site-tab"><span class="site-tab-icon">📜</span>記憶の書庫</a>
+  </nav>
+</header>
 
-  <!-- World Clock -->
-  <div class="wc-section">
-    <div class="section-label"><span id="wc-label">世界時計</span><span class="sub-jp">World Clocks</span></div>
-    <div class="watch-grid" id="watch-grid"></div>
-    <div class="wc-hint" id="wc-hint">
-      国をクリックすると、下の予定表の時刻表示がその国の時間に切り替わります
-      ／ 現在の基準: <span class="tz-selected-name" id="tz-selected-name">日本 (JST)</span>
-    </div>
-  </div>
+<main class="hub-main">
+  <p class="hub-intro">Throne and Liberty 非公式攻略ツール集。ゲーム内の昼夜サイクルとギア強化(Watermark)ドロップ確率を、ひとつの画面でまとめて確認できます。</p>
 
-  <!-- Sky panel -->
-  <div class="sky-section" id="sky-section">
-    <div class="live-badge"><span class="live-dot"></span>LIVE</div>
+  <div class="hub-grid">
 
-    <div class="sky-phase-tag" id="sky-phase-tag">現在の空</div>
-    <div class="sky-phase-row">
-      <span class="sky-icon" id="sky-icon">☀️</span>
-      <span class="sky-phase-name day" id="sky-phase-name">昼</span>
-    </div>
-    <div class="sky-countdown-title" id="sky-countdown-title">夜まであと</div>
-    <div class="sky-countdown-num" id="sky-countdown-num">01:23:45</div>
-
-    <div class="sky-arc-wrap">
-      <svg class="sky-arc-svg" viewBox="0 0 300 110" id="sky-arc-svg">
-        <g id="sky-arc-static"></g>
-        <g id="sky-arc-marker"></g>
-      </svg>
-    </div>
-
-    <div class="sky-elapsed" id="sky-elapsed">経過 <b>0</b>分 / 120分</div>
-
-    <div class="sky-legend">
-      <div class="sky-legend-item">
-        <div class="sky-legend-swatch" style="background:var(--brass);"></div>
-        <span id="legend-day">昼 · 120分</span>
+    <!-- ══════ Daynight widget ══════ -->
+    <section class="widget widget-dn" id="widget-dn">
+      <div class="widget-header">
+        <div>
+          <span class="widget-eyebrow">DAY / NIGHT</span>
+          <h2 class="widget-title">暦</h2>
+        </div>
+        <div class="dn-controls">
+          <div class="dn-control-group">
+            <button class="dn-btn active" id="dn-btn-jp" onclick="dnSetLang('jp')">日本語</button>
+            <button class="dn-btn" id="dn-btn-en" onclick="dnSetLang('en')">EN</button>
+          </div>
+          <div class="dn-control-group">
+            <button class="dn-btn active" id="dn-btn-jst" onclick="dnSetTZ('jst')">JST</button>
+            <button class="dn-btn" id="dn-btn-local" onclick="dnSetTZ('local')">LOCAL</button>
+          </div>
+        </div>
       </div>
-      <div class="sky-legend-item">
-        <div class="sky-legend-swatch" style="background:var(--indigo);"></div>
-        <span id="legend-night">夜 · 30分</span>
+
+      <div class="dn-sky" id="dn-sky">
+        <div class="dn-live-badge"><span class="dn-live-dot"></span>LIVE</div>
+
+        <div class="dn-phase-tag" id="dn-phase-tag">現在の空</div>
+        <div class="dn-phase-row">
+          <span class="dn-icon" id="dn-icon">☀️</span>
+          <span class="dn-phase-name day" id="dn-phase-name">昼</span>
+        </div>
+        <div class="dn-countdown-title" id="dn-countdown-title">夜まであと</div>
+        <div class="dn-countdown-num" id="dn-countdown-num">01:23:45</div>
+
+        <div class="dn-arc-wrap">
+          <svg class="dn-arc-svg" viewBox="0 0 300 110" id="dn-arc-svg">
+            <g id="dn-arc-static"></g>
+            <g id="dn-arc-marker"></g>
+          </svg>
+        </div>
+
+        <div class="dn-elapsed" id="dn-elapsed">経過 <b>0</b>分 / 120分</div>
+
+        <div class="dn-legend">
+          <div class="dn-legend-item">
+            <div class="dn-legend-swatch" style="background:var(--brass);"></div>
+            <span id="dn-legend-day">昼 · 120分</span>
+          </div>
+          <div class="dn-legend-item">
+            <div class="dn-legend-swatch" style="background:var(--indigo);"></div>
+            <span id="dn-legend-night">夜 · 30分</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Itinerary -->
-  <div class="itin-section">
-    <div class="section-label"><span id="itin-label">予定表</span><span class="sub-jp">Next 12 Hours</span></div>
-    <div class="itin-list" id="itin-list"></div>
-  </div>
+      <div class="dn-section-label"><span id="dn-itin-label">予定表</span><span class="dn-sub-jp">Next 12 Hours</span></div>
+      <div class="dn-itin-list" id="dn-itin-list"></div>
 
-  <div class="footer" id="footer">Cycle: 夜 30分 → 昼 120分（計150分）</div>
-</div>
+      <div class="dn-basis" id="dn-basis">基準: <b id="dn-basis-name">日本 (JST)</b></div>
+    </section>
+
+    <!-- ══════ Watermark widget ══════ -->
+    <section class="widget widget-wm" id="widget-wm">
+      <div class="widget-header">
+        <div>
+          <span class="widget-eyebrow">GEAR ENHANCEMENT</span>
+          <h2 class="widget-title">強化計算</h2>
+        </div>
+      </div>
+      <p class="wm-source">データ出典: How to Level Up Gear by Aragon &amp; Kninebeat (2026-07-04)</p>
+
+      <div class="wm-tabs">
+        <button class="wm-tab-btn active" data-tab="calc">計算</button>
+        <button class="wm-tab-btn" data-tab="sim">シミュレーション</button>
+        <button class="wm-tab-btn" data-tab="table">確率表</button>
+      </div>
+
+      <!-- Tab 1: Calculator -->
+      <div id="wm-tab-calc" class="wm-tab-panel active">
+        <div class="wm-card">
+          <div class="wm-card-title">ウォーターマーク (WM) とは?</div>
+          <div class="wm-hint">
+            <strong>Watermark</strong> = 武器 / 防具 / アクセサリー それぞれのカテゴリで<strong>これまでに入手した最高 IL</strong> を3つ平均した値 (端数切り捨て)。<br>
+            次のドロップ IL はこの WM を基準に確率分布で決まります。<br>
+            カテゴリ間の IL 差が大きいと全体 WM が頭打ちになるため、<strong>最も低いカテゴリを優先して強化する</strong>のが効率的です。
+          </div>
+        </div>
+
+        <div class="wm-card">
+          <div class="wm-card-title">現在の最高アイテムレベル</div>
+          <div class="wm-input-grid">
+            <div class="wm-field">
+              <label>武器 IL</label>
+              <input type="number" id="wm-c-weapon" min="21" max="80" value="60">
+            </div>
+            <div class="wm-field">
+              <label>防具 IL</label>
+              <input type="number" id="wm-c-armor" min="21" max="80" value="60">
+            </div>
+            <div class="wm-field">
+              <label>アクセサリー IL</label>
+              <input type="number" id="wm-c-acc" min="21" max="80" value="60">
+            </div>
+          </div>
+        </div>
+
+        <div class="wm-card" id="wm-calc-result" style="display:none">
+          <div class="wm-card-title">現在のウォーターマーク</div>
+          <div class="wm-display">
+            <div>
+              <div class="wm-big" id="wm-value">--</div>
+              <div class="wm-caption">Watermark</div>
+            </div>
+            <div id="wm-breakdown"></div>
+          </div>
+          <div id="wm-weak-hint" class="wm-hint" style="margin-top:12px"></div>
+        </div>
+
+        <div class="wm-card" id="wm-calc-prob-card" style="display:none">
+          <div class="wm-card-title">次のドロップ確率 (WM <span id="wm-prob-wm-label">--</span> 基準)</div>
+          <table class="wm-prob-table">
+            <thead>
+              <tr>
+                <th style="text-align:left">ドロップ IL</th>
+                <th>WMとの差</th>
+                <th>確率</th>
+                <th>累積確率</th>
+              </tr>
+            </thead>
+            <tbody id="wm-calc-prob-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 2: Simulation -->
+      <div id="wm-tab-sim" class="wm-tab-panel">
+        <div class="wm-card">
+          <div class="wm-card-title">シミュレーション設定</div>
+          <div class="wm-hint" style="margin-bottom:12px">
+            ※ ドロップカテゴリ (武器 / 防具 / アクセサリー) は均等 1/3 確率で割り当てると仮定しています。実際のゲーム内確率と異なる場合があります。
+          </div>
+          <div class="wm-input-grid">
+            <div class="wm-field">
+              <label>武器 現在 IL</label>
+              <input type="number" id="wm-s-weapon" min="21" max="80" value="60">
+            </div>
+            <div class="wm-field">
+              <label>防具 現在 IL</label>
+              <input type="number" id="wm-s-armor" min="21" max="80" value="60">
+            </div>
+            <div class="wm-field">
+              <label>アクセサリー 現在 IL</label>
+              <input type="number" id="wm-s-acc" min="21" max="80" value="60">
+            </div>
+          </div>
+          <div class="wm-range-row">
+            <label>目標 Watermark: <strong id="wm-s-target-val">65</strong></label>
+            <input type="range" id="wm-s-target" min="22" max="80" value="65">
+          </div>
+          <div class="wm-range-row">
+            <label>試行回数: <strong id="wm-s-trials-val">10,000</strong></label>
+            <input type="range" id="wm-s-trials" min="1000" max="50000" step="1000" value="10000">
+          </div>
+          <button class="wm-btn" id="wm-sim-btn" onclick="wmRunSimulation()">シミュレーション実行</button>
+        </div>
+
+        <div id="wm-sim-progress" class="wm-progress" style="display:none">計算中... しばらくお待ちください</div>
+
+        <div id="wm-sim-result" style="display:none">
+          <div class="wm-card">
+            <div class="wm-card-title">シミュレーション結果</div>
+            <div class="wm-stats-grid">
+              <div class="wm-stat-box">
+                <div class="wm-stat-value" id="wm-sim-mean">--</div>
+                <div class="wm-stat-label">平均ドロップ数</div>
+              </div>
+              <div class="wm-stat-box">
+                <div class="wm-stat-value" id="wm-sim-median">--</div>
+                <div class="wm-stat-label">中央値</div>
+              </div>
+              <div class="wm-stat-box">
+                <div class="wm-stat-value" id="wm-sim-p90">--</div>
+                <div class="wm-stat-label">90パーセンタイル</div>
+                <div class="wm-stat-sub">10回に9回はこの回数以内で到達</div>
+              </div>
+            </div>
+            <div id="wm-sim-percentiles" style="font-size:0.74rem;color:var(--parchment-dim);line-height:1.8;font-family:var(--font-mono)"></div>
+          </div>
+          <div class="wm-card">
+            <div class="wm-card-title">ドロップ数の分布</div>
+            <canvas id="wm-sim-chart" height="180"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Detail table -->
+      <div id="wm-tab-table" class="wm-tab-panel">
+        <div class="wm-card">
+          <div class="wm-card-title">WM 別確率詳細</div>
+          <div class="wm-range-row">
+            <label>Watermark: <strong id="wm-t-wm-val">60</strong></label>
+            <input type="range" id="wm-t-wm" min="21" max="80" value="60">
+          </div>
+          <table class="wm-prob-table">
+            <thead>
+              <tr>
+                <th style="text-align:left">ドロップ IL</th>
+                <th>オフセット</th>
+                <th style="text-align:left">確率</th>
+              </tr>
+            </thead>
+            <tbody id="wm-detail-body"></tbody>
+          </table>
+        </div>
+
+        <div class="wm-card">
+          <div class="wm-card-title">全 WM ヒートマップ (行: WM / 列: オフセット)</div>
+          <div class="wm-table-wrap">
+            <table class="wm-heat-table" id="wm-heat-table"></table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">Solisium Compendium — Throne and Liberty 非公式攻略ツール集</footer>
 
 <script>
-// =====================================================================
-// CONFIG
-// =====================================================================
-const ANCHOR_UTC = "2026-07-12T17:30:00Z";
-const CYCLE_MIN  = 150;
-const NIGHT_MIN  = 30;
-const DAY_MIN    = 120;
-const HOURS_AHEAD = 12;
+/* =====================================================================
+   DAYNIGHT WIDGET
+   ===================================================================== */
+(function () {
+  const ANCHOR_UTC = "2026-07-12T17:30:00Z";
+  const CYCLE_MIN  = 150;
+  const NIGHT_MIN  = 30;
+  const DAY_MIN    = 120;
+  const HOURS_AHEAD = 12;
 
-const REGIONS = [
-  { jp: "日本",         en: "Japan",       flag: "🇯🇵", tz: "Asia/Tokyo",        jstDiff: 0    },
-  { jp: "中国",         en: "China",       flag: "🇨🇳", tz: "Asia/Shanghai",     jstDiff: -1   },
-  { jp: "台湾",         en: "Taiwan",      flag: "🇹🇼", tz: "Asia/Taipei",       jstDiff: -1   },
-  { jp: "タイ",         en: "Thailand",    flag: "🇹🇭", tz: "Asia/Bangkok",      jstDiff: -2   },
-  { jp: "シンガポール", en: "Singapore",   flag: "🇸🇬", tz: "Asia/Singapore",    jstDiff: -1   },
-  { jp: "豪州",         en: "Australia",   flag: "🇦🇺", tz: "Australia/Sydney",  jstDiff: null },
-  { jp: "ベトナム",     en: "Vietnam",     flag: "🇻🇳", tz: "Asia/Ho_Chi_Minh",  jstDiff: -2   },
-];
-
-const I18N = {
-  jp: {
-    eyebrow: "ソリシウム — Throne and Liberty",
-    wc: "世界時計",
-    itin: "予定表",
-    phase_tag: "現在の空",
-    phase_day: "昼", phase_night: "夜",
-    cd_until_night: "夜まであと", cd_until_day: "昼まであと",
-    elapsed_prefix: "経過", elapsed_unit: "分",
-    legend_day: "昼 · 120分", legend_night: "夜 · 30分",
-    now_label: "現在",
-    footer: "Cycle: 夜 30分 → 昼 120分（計150分）",
-    itin_day: "昼", itin_night: "夜",
-    itin_min: "分",
-    wc_hint_1: "国をクリックすると、下の予定表の時刻表示がその国の時間に切り替わります ／ 現在の基準: ",
-  },
-  en: {
-    eyebrow: "Solisium — Throne and Liberty",
-    wc: "World Clocks",
-    itin: "Itinerary",
-    phase_tag: "Current Sky",
-    phase_day: "DAY", phase_night: "NIGHT",
-    cd_until_night: "Until Night", cd_until_day: "Until Day",
-    elapsed_prefix: "Elapsed", elapsed_unit: "min",
-    legend_day: "Day · 120min", legend_night: "Night · 30min",
-    now_label: "NOW",
-    footer: "Cycle: Night 30min → Day 120min (total 150min)",
-    itin_day: "Day", itin_night: "Night",
-    itin_min: "min",
-    wc_hint_1: "Click a country to retime the itinerary below to its timezone / Current base: ",
-  }
-};
-
-let lang = 'jp';
-let displayTZ = 'Asia/Tokyo';
-let selectedRegionIdx = 0;
-
-// =====================================================================
-// CORE LOGIC
-// =====================================================================
-function getPhase(now = new Date()) {
-  const anchor = new Date(ANCHOR_UTC);
-  const elapsedMin = (now - anchor) / 60000;
-  const offset = ((elapsedMin % CYCLE_MIN) + CYCLE_MIN) % CYCLE_MIN;
-  const isNight = offset < NIGHT_MIN;
-  return {
-    phase: isNight ? "night" : "day",
-    remainingMin: isNight ? NIGHT_MIN - offset : CYCLE_MIN - offset,
-    offset,
-    elapsedInPhase: isNight ? offset : offset - NIGHT_MIN,
-    phaseDuration: isNight ? NIGHT_MIN : DAY_MIN,
+  const I18N = {
+    jp: {
+      phase_tag: "現在の空",
+      phase_day: "昼", phase_night: "夜",
+      cd_until_night: "夜まであと", cd_until_day: "昼まであと",
+      elapsed_prefix: "経過", elapsed_unit: "分",
+      legend_day: "昼 · 120分", legend_night: "夜 · 30分",
+      now_label: "現在",
+      itin: "予定表",
+      itin_day: "昼", itin_night: "夜", itin_min: "分",
+      basis_jst: "日本 (JST)", basis_local: "ローカル時刻",
+    },
+    en: {
+      phase_tag: "Current Sky",
+      phase_day: "DAY", phase_night: "NIGHT",
+      cd_until_night: "Until Night", cd_until_day: "Until Day",
+      elapsed_prefix: "Elapsed", elapsed_unit: "min",
+      legend_day: "Day · 120min", legend_night: "Night · 30min",
+      now_label: "NOW",
+      itin: "Itinerary",
+      itin_day: "Day", itin_night: "Night", itin_min: "min",
+      basis_jst: "Japan (JST)", basis_local: "Local Time",
+    }
   };
-}
 
-function getTimeline(hours = 12) {
-  const now = new Date();
-  const { phase, remainingMin } = getPhase(now);
-  const blocks = [];
-  let cursor = new Date(now);
-  let cur = phase;
-  let left = remainingMin;
-  const endTime = new Date(now.getTime() + hours * 3600000);
+  const browserLang = (navigator.language || '').toLowerCase();
+  let lang = browserLang.startsWith('ja') ? 'jp' : 'en';
+  let displayTZ = 'Asia/Tokyo';
+  let tzMode = 'jst';
 
-  while (cursor < endTime) {
-    const blockEnd = new Date(cursor.getTime() + left * 60000);
-    const clip = blockEnd < endTime ? blockEnd : endTime;
-    blocks.push({ phase: cur, start: new Date(cursor), end: clip, rawEnd: new Date(blockEnd) });
-    cursor = blockEnd;
-    cur = cur === "night" ? "day" : "night";
-    left = cur === "night" ? NIGHT_MIN : DAY_MIN;
-  }
-  return blocks;
-}
-
-function pad2(n) { return String(Math.floor(n)).padStart(2, '0'); }
-
-// =====================================================================
-// SKY ARC (horizontal sun/moon path, SVG)
-// =====================================================================
-const ARC_CX = 150, ARC_CY = 100, ARC_R = 90;
-
-function polarPoint(angleDeg) {
-  const rad = angleDeg * Math.PI / 180;
-  return {
-    x: ARC_CX + ARC_R * Math.cos(rad),
-    y: ARC_CY - ARC_R * Math.sin(rad),
-  };
-}
-
-// t: 0 (left, cycle start) -> 1 (right, cycle end). Sweeps left->top->right.
-function arcAngleForT(t) { return 180 - t * 180; }
-
-function buildSkyArcStatic() {
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const g = document.getElementById('sky-arc-static');
-  g.innerHTML = '';
-
-  // Baseline
-  const base = document.createElementNS(svgNS, 'line');
-  base.setAttribute('x1', 40); base.setAttribute('y1', ARC_CY);
-  base.setAttribute('x2', 260); base.setAttribute('y2', ARC_CY);
-  base.setAttribute('stroke', 'rgba(201,161,92,0.15)');
-  base.setAttribute('stroke-width', 1);
-  base.setAttribute('stroke-dasharray', '2 4');
-  g.appendChild(base);
-
-  const nightFrac = NIGHT_MIN / CYCLE_MIN;
-  const p0 = polarPoint(arcAngleForT(0));
-  const p1 = polarPoint(arcAngleForT(nightFrac));
-  const p2 = polarPoint(arcAngleForT(1));
-
-  const nightPath = document.createElementNS(svgNS, 'path');
-  nightPath.setAttribute('d', `M ${p0.x} ${p0.y} A ${ARC_R} ${ARC_R} 0 0 1 ${p1.x} ${p1.y}`);
-  nightPath.setAttribute('fill', 'none');
-  nightPath.setAttribute('stroke', 'var(--indigo)');
-  nightPath.setAttribute('stroke-width', 6);
-  nightPath.setAttribute('stroke-linecap', 'round');
-  g.appendChild(nightPath);
-
-  const dayPath = document.createElementNS(svgNS, 'path');
-  dayPath.setAttribute('d', `M ${p1.x} ${p1.y} A ${ARC_R} ${ARC_R} 0 0 1 ${p2.x} ${p2.y}`);
-  dayPath.setAttribute('fill', 'none');
-  dayPath.setAttribute('stroke', 'var(--brass)');
-  dayPath.setAttribute('stroke-width', 6);
-  dayPath.setAttribute('stroke-linecap', 'round');
-  g.appendChild(dayPath);
-
-  // Endpoint + boundary dots
-  [p0, p1, p2].forEach(p => {
-    const dot = document.createElementNS(svgNS, 'circle');
-    dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y);
-    dot.setAttribute('r', 2.2);
-    dot.setAttribute('fill', 'rgba(236,225,198,0.4)');
-    g.appendChild(dot);
-  });
-}
-
-function updateSkyArcMarker(offset) {
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const t = offset / CYCLE_MIN;
-  const p = polarPoint(arcAngleForT(t));
-  const isNight = offset < NIGHT_MIN;
-
-  const g = document.getElementById('sky-arc-marker');
-  g.innerHTML = '';
-
-  const glow = document.createElementNS(svgNS, 'circle');
-  glow.setAttribute('cx', p.x); glow.setAttribute('cy', p.y);
-  glow.setAttribute('r', 9);
-  glow.setAttribute('fill', isNight ? 'rgba(171,157,255,0.25)' : 'rgba(240,207,142,0.3)');
-  g.appendChild(glow);
-
-  const text = document.createElementNS(svgNS, 'text');
-  text.setAttribute('x', p.x); text.setAttribute('y', p.y);
-  text.setAttribute('text-anchor', 'middle');
-  text.setAttribute('dominant-baseline', 'central');
-  text.setAttribute('font-size', '13');
-  text.textContent = isNight ? '🌙' : '☀️';
-  g.appendChild(text);
-}
-
-// =====================================================================
-// ANALOG WATCH DRAWING
-// =====================================================================
-function getTimeParts(tz) {
-  const now = new Date();
-  const fmt = new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric', minute: 'numeric', second: 'numeric',
-    hour12: false, timeZone: tz
-  });
-  const parts = {};
-  fmt.formatToParts(now).forEach(p => { parts[p.type] = parseInt(p.value); });
-  return { h: parts.hour || 0, m: parts.minute || 0, s: parts.second || 0 };
-}
-
-function drawWatch(canvas, tz) {
-  const dpr = window.devicePixelRatio || 1;
-  const size = canvas.clientWidth || 68;
-  if (canvas.width !== size * dpr) {
-    canvas.width  = size * dpr;
-    canvas.height = size * dpr;
-  }
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  const cx = size / 2, cy = size / 2;
-  const r  = size / 2 - 2;
-
-  ctx.clearRect(0, 0, size, size);
-
-  const bezelGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
-  bezelGrad.addColorStop(0, '#8a6f42');
-  bezelGrad.addColorStop(0.5, '#c9a15c');
-  bezelGrad.addColorStop(1, '#6b552f');
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.fillStyle = bezelGrad;
-  ctx.fill();
-
-  const faceGrad = ctx.createRadialGradient(cx, cy - r * 0.15, r * 0.05, cx, cy, r * 0.86);
-  faceGrad.addColorStop(0, '#1c2130');
-  faceGrad.addColorStop(1, '#0d1018');
-  ctx.beginPath();
-  ctx.arc(cx, cy, r - 3, 0, Math.PI * 2);
-  ctx.fillStyle = faceGrad;
-  ctx.fill();
-
-  for (let i = 0; i < 60; i++) {
-    const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
-    const isHour = i % 5 === 0;
-    const len   = isHour ? 6.5 : 2.6;
-    const width = isHour ? 1.6 : 0.7;
-    const color = isHour ? 'rgba(240,207,142,0.9)' : 'rgba(236,225,198,0.28)';
-    const rr = r - 6;
-    const x1 = cx + Math.cos(angle) * rr;
-    const y1 = cy + Math.sin(angle) * rr;
-    const x2 = cx + Math.cos(angle) * (rr - len);
-    const y2 = cy + Math.sin(angle) * (rr - len);
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = width;
-    ctx.stroke();
+  function getPhase(now = new Date()) {
+    const anchor = new Date(ANCHOR_UTC);
+    const elapsedMin = (now - anchor) / 60000;
+    const offset = ((elapsedMin % CYCLE_MIN) + CYCLE_MIN) % CYCLE_MIN;
+    const isNight = offset < NIGHT_MIN;
+    return {
+      phase: isNight ? "night" : "day",
+      remainingMin: isNight ? NIGHT_MIN - offset : CYCLE_MIN - offset,
+      offset,
+      elapsedInPhase: isNight ? offset : offset - NIGHT_MIN,
+      phaseDuration: isNight ? NIGHT_MIN : DAY_MIN,
+    };
   }
 
-  const { h, m, s } = getTimeParts(tz);
-
-  const hourAngle = ((h % 12 + m / 60 + s / 3600) / 12) * Math.PI * 2 - Math.PI / 2;
-  drawHand(ctx, cx, cy, hourAngle, r * 0.46, 2.3, '#ece1c6', r * 0.12);
-
-  const minAngle = ((m + s / 60) / 60) * Math.PI * 2 - Math.PI / 2;
-  drawHand(ctx, cx, cy, minAngle, r * 0.70, 1.6, '#d8cba8', r * 0.13);
-
-  const secAngle = (s / 60) * Math.PI * 2 - Math.PI / 2;
-  drawHand(ctx, cx, cy, secAngle, r * 0.76, 0.8, '#ff4f3f', r * 0.16);
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, 2.2, 0, Math.PI * 2);
-  ctx.fillStyle = '#f0cf8e';
-  ctx.fill();
-}
-
-function drawHand(ctx, cx, cy, angle, length, width, color, tail = 0) {
-  ctx.beginPath();
-  if (tail > 0) {
-    ctx.moveTo(cx + Math.cos(angle + Math.PI) * tail, cy + Math.sin(angle + Math.PI) * tail);
-  } else {
-    ctx.moveTo(cx, cy);
+  function getTimeline(hours = 12) {
+    const now = new Date();
+    const { phase, remainingMin } = getPhase(now);
+    const blocks = [];
+    let cursor = new Date(now);
+    let cur = phase;
+    let left = remainingMin;
+    const endTime = new Date(now.getTime() + hours * 3600000);
+    while (cursor < endTime) {
+      const blockEnd = new Date(cursor.getTime() + left * 60000);
+      const clip = blockEnd < endTime ? blockEnd : endTime;
+      blocks.push({ phase: cur, start: new Date(cursor), end: clip, rawEnd: new Date(blockEnd) });
+      cursor = blockEnd;
+      cur = cur === "night" ? "day" : "night";
+      left = cur === "night" ? NIGHT_MIN : DAY_MIN;
+    }
+    return blocks;
   }
-  ctx.lineTo(cx + Math.cos(angle) * length, cy + Math.sin(angle) * length);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = width;
-  ctx.lineCap = 'round';
-  ctx.stroke();
-}
 
-// =====================================================================
-// BUILD WORLD CLOCK GRID
-// =====================================================================
-function buildWatchGrid() {
-  const grid = document.getElementById('watch-grid');
-  grid.innerHTML = '';
-  REGIONS.forEach((r, i) => {
-    const name = lang === 'jp' ? r.jp : r.en;
-    const diffStr = computeDiffLabel(r);
+  function pad2(n) { return String(Math.floor(n)).padStart(2, '0'); }
 
-    const item = document.createElement('div');
-    item.className = 'watch-item' + (i === selectedRegionIdx ? ' tz-active' : '');
-    item.innerHTML = `
-      <canvas class="watch-canvas" data-tz="${r.tz}" width="136" height="136"></canvas>
-      <div class="watch-info">
-        <div class="watch-name"><span class="flag">${r.flag}</span>${name}</div>
-        <div class="watch-digital" data-digital="${r.tz}">--:--:--</div>
-        <div class="watch-diff">${diffStr}</div>
+  // Sky arc
+  const ARC_CX = 150, ARC_CY = 100, ARC_R = 90;
+  function polarPoint(angleDeg) {
+    const rad = angleDeg * Math.PI / 180;
+    return { x: ARC_CX + ARC_R * Math.cos(rad), y: ARC_CY - ARC_R * Math.sin(rad) };
+  }
+  function arcAngleForT(t) { return 180 - t * 180; }
+
+  function buildSkyArcStatic() {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const g = document.getElementById('dn-arc-static');
+    g.innerHTML = '';
+
+    const base = document.createElementNS(svgNS, 'line');
+    base.setAttribute('x1', 40); base.setAttribute('y1', ARC_CY);
+    base.setAttribute('x2', 260); base.setAttribute('y2', ARC_CY);
+    base.setAttribute('stroke', 'rgba(201,161,92,0.15)');
+    base.setAttribute('stroke-width', 1);
+    base.setAttribute('stroke-dasharray', '2 4');
+    g.appendChild(base);
+
+    const nightFrac = NIGHT_MIN / CYCLE_MIN;
+    const p0 = polarPoint(arcAngleForT(0));
+    const p1 = polarPoint(arcAngleForT(nightFrac));
+    const p2 = polarPoint(arcAngleForT(1));
+
+    const nightPath = document.createElementNS(svgNS, 'path');
+    nightPath.setAttribute('d', `M ${p0.x} ${p0.y} A ${ARC_R} ${ARC_R} 0 0 1 ${p1.x} ${p1.y}`);
+    nightPath.setAttribute('fill', 'none');
+    nightPath.setAttribute('stroke', 'var(--indigo)');
+    nightPath.setAttribute('stroke-width', 6);
+    nightPath.setAttribute('stroke-linecap', 'round');
+    g.appendChild(nightPath);
+
+    const dayPath = document.createElementNS(svgNS, 'path');
+    dayPath.setAttribute('d', `M ${p1.x} ${p1.y} A ${ARC_R} ${ARC_R} 0 0 1 ${p2.x} ${p2.y}`);
+    dayPath.setAttribute('fill', 'none');
+    dayPath.setAttribute('stroke', 'var(--brass)');
+    dayPath.setAttribute('stroke-width', 6);
+    dayPath.setAttribute('stroke-linecap', 'round');
+    g.appendChild(dayPath);
+
+    [p0, p1, p2].forEach(p => {
+      const dot = document.createElementNS(svgNS, 'circle');
+      dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y);
+      dot.setAttribute('r', 2.2);
+      dot.setAttribute('fill', 'rgba(236,225,198,0.4)');
+      g.appendChild(dot);
+    });
+  }
+
+  function updateSkyArcMarker(offset) {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const t = offset / CYCLE_MIN;
+    const p = polarPoint(arcAngleForT(t));
+    const isNight = offset < NIGHT_MIN;
+    const g = document.getElementById('dn-arc-marker');
+    g.innerHTML = '';
+
+    const glow = document.createElementNS(svgNS, 'circle');
+    glow.setAttribute('cx', p.x); glow.setAttribute('cy', p.y);
+    glow.setAttribute('r', 9);
+    glow.setAttribute('fill', isNight ? 'rgba(171,157,255,0.25)' : 'rgba(240,207,142,0.3)');
+    g.appendChild(glow);
+
+    const text = document.createElementNS(svgNS, 'text');
+    text.setAttribute('x', p.x); text.setAttribute('y', p.y);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'central');
+    text.setAttribute('font-size', '13');
+    text.textContent = isNight ? '🌙' : '☀️';
+    g.appendChild(text);
+  }
+
+  function fmtShortTime(date, tz) {
+    return new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz
+    }).format(date);
+  }
+
+  function computeJSTDiff(tz) {
+    const now = new Date();
+    const jst   = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    const local = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+    const dh = (local - jst) / 3600000;
+    if (dh === 0) return 'JST';
+    return `JST${dh > 0 ? '+' : ''}${dh}h`;
+  }
+
+  function renderPhase() {
+    const T = I18N[lang];
+    const now = new Date();
+    const { phase, remainingMin, offset, elapsedInPhase, phaseDuration } = getPhase(now);
+    const isNight = phase === 'night';
+
+    document.getElementById('dn-icon').textContent = isNight ? '🌙' : '☀️';
+    document.getElementById('dn-phase-tag').textContent = T.phase_tag;
+    const nameEl = document.getElementById('dn-phase-name');
+    nameEl.textContent = isNight ? T.phase_night : T.phase_day;
+    nameEl.className = `dn-phase-name ${isNight ? 'night' : 'day'}`;
+
+    document.getElementById('dn-countdown-title').textContent = isNight ? T.cd_until_day : T.cd_until_night;
+
+    const totalSec = Math.max(0, Math.round(remainingMin * 60));
+    const hours   = Math.floor(totalSec / 3600);
+    const minutes = Math.floor((totalSec % 3600) / 60);
+    const seconds = totalSec % 60;
+    const timeStr = hours > 0
+      ? `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`
+      : `${minutes}:${pad2(seconds)}`;
+    document.getElementById('dn-countdown-num').textContent = timeStr;
+
+    const elapsedMinInt = Math.floor(elapsedInPhase);
+    document.getElementById('dn-elapsed').innerHTML =
+      `${T.elapsed_prefix} <b>${elapsedMinInt}</b>${T.elapsed_unit} / ${phaseDuration}${T.elapsed_unit}`;
+
+    updateSkyArcMarker(offset);
+  }
+
+  function renderItinerary() {
+    const T = I18N[lang];
+    const now = new Date();
+    const blocks = getTimeline(HOURS_AHEAD);
+    const tz = displayTZ;
+
+    const list = document.getElementById('dn-itin-list');
+    list.innerHTML = blocks.map((b, i) => {
+      const isCurrent = i === 0;
+      const startStr = fmtShortTime(b.rawEnd > now ? b.start : now, tz);
+      const endStr   = fmtShortTime(b.rawEnd, tz);
+      const durMin   = Math.round((b.rawEnd - b.start) / 60000);
+      const isDay    = b.phase === 'day';
+      const icon     = isDay ? '☀️' : '🌙';
+      const phaseName = isDay ? T.itin_day : T.itin_night;
+      const nowTag = isCurrent ? `<span class="dn-itin-now-tag">${T.now_label}</span>` : '';
+
+      return `<div class="dn-itin-row${isCurrent ? ' is-now' : ''}">
+        <span class="dn-itin-time">${startStr}${nowTag}</span>
+        <span class="dn-itin-icon">${icon}</span>
+        <span class="dn-itin-phase ${b.phase}">${phaseName}</span>
+        <span class="dn-itin-duration">〜${endStr} (${durMin}${T.itin_min})</span>
       </div>`;
-    item.addEventListener('click', () => selectRegion(i));
-    grid.appendChild(item);
-  });
-  updateWCHint();
-}
+    }).join('');
 
-function computeDiffLabel(r) {
-  if (r.jstDiff === 0)         return 'JST';
-  if (r.jstDiff !== null)      return `JST${r.jstDiff > 0 ? '+' : ''}${r.jstDiff}h`;
-  return computeJSTDiff(r.tz);
-}
-
-function computeJSTDiff(tz) {
-  const now = new Date();
-  const jst   = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-  const local = new Date(now.toLocaleString('en-US', { timeZone: tz }));
-  const dh = (local - jst) / 3600000;
-  if (dh === 0) return 'JST';
-  return `JST${dh > 0 ? '+' : ''}${dh}h`;
-}
-
-function selectRegion(idx) {
-  selectedRegionIdx = idx;
-  displayTZ = REGIONS[idx].tz;
-  document.querySelectorAll('.watch-item').forEach((el, i) => {
-    el.classList.toggle('tz-active', i === idx);
-  });
-  updateWCHint();
-  renderItinerary();
-}
-
-function updateWCHint() {
-  const T = I18N[lang];
-  if (selectedRegionIdx < 0) return;
-  const r = REGIONS[selectedRegionIdx];
-  const name = lang === 'jp' ? r.jp : r.en;
-  const diffStr = computeDiffLabel(r);
-  const nameEl = document.getElementById('tz-selected-name');
-  if (nameEl) nameEl.textContent = `${name} (${diffStr})`;
-  const hintEl = document.getElementById('wc-hint');
-  if (hintEl && hintEl.firstChild) hintEl.firstChild.textContent = T.wc_hint_1;
-}
-
-function fmtDigital(tz) {
-  const now = new Date();
-  return new Intl.DateTimeFormat('en-GB', {
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-    hour12: false, timeZone: tz
-  }).format(now);
-}
-
-function fmtShortTime(date, tz) {
-  return new Intl.DateTimeFormat('en-GB', {
-    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz
-  }).format(date);
-}
-
-// =====================================================================
-// RENDER PHASE + SKY PANEL
-// =====================================================================
-function renderPhase() {
-  const T = I18N[lang];
-  const now = new Date();
-  const { phase, remainingMin, offset, elapsedInPhase, phaseDuration } = getPhase(now);
-  const isNight = phase === 'night';
-
-  document.getElementById('sky-section').classList.toggle('is-night', isNight);
-
-  document.getElementById('sky-icon').textContent = isNight ? '🌙' : '☀️';
-
-  document.getElementById('sky-phase-tag').textContent = T.phase_tag;
-  const nameEl = document.getElementById('sky-phase-name');
-  nameEl.textContent = isNight ? T.phase_night : T.phase_day;
-  nameEl.className = `sky-phase-name ${isNight ? 'night' : 'day'}`;
-
-  document.getElementById('sky-countdown-title').textContent = isNight ? T.cd_until_day : T.cd_until_night;
-
-  const totalSec = Math.max(0, Math.round(remainingMin * 60));
-  const hours   = Math.floor(totalSec / 3600);
-  const minutes = Math.floor((totalSec % 3600) / 60);
-  const seconds = totalSec % 60;
-  const timeStr = hours > 0
-    ? `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`
-    : `${minutes}:${pad2(seconds)}`;
-  document.getElementById('sky-countdown-num').textContent = timeStr;
-
-  const elapsedMinInt = Math.floor(elapsedInPhase);
-  document.getElementById('sky-elapsed').innerHTML =
-    `${T.elapsed_prefix} <b>${elapsedMinInt}</b>${T.elapsed_unit} / ${phaseDuration}${T.elapsed_unit}`;
-
-  updateSkyArcMarker(offset);
-}
-
-// =====================================================================
-// RENDER ITINERARY (timeline)
-// =====================================================================
-function renderItinerary() {
-  const T = I18N[lang];
-  const now = new Date();
-  const blocks = getTimeline(HOURS_AHEAD);
-  const tz = displayTZ;
-
-  const list = document.getElementById('itin-list');
-  list.innerHTML = blocks.map((b, i) => {
-    const isCurrent = i === 0;
-    const startStr = fmtShortTime(b.rawEnd > now ? b.start : now, tz);
-    const endStr   = fmtShortTime(b.rawEnd, tz);
-    const durMin   = Math.round((b.rawEnd - b.start) / 60000);
-    const isDay    = b.phase === 'day';
-    const icon     = isDay ? '☀️' : '🌙';
-    const phaseName = isDay ? T.itin_day : T.itin_night;
-    const nowTag = isCurrent ? `<span class="itin-now-tag">${T.now_label}</span>` : '';
-
-    return `<div class="itin-row${isCurrent ? ' is-now' : ''}">
-      <span class="itin-time">${startStr}${nowTag}</span>
-      <span class="itin-icon">${icon}</span>
-      <span class="itin-phase ${b.phase}">${phaseName}</span>
-      <span class="itin-duration">〜${endStr} (${durMin}${T.itin_min})</span>
-    </div>`;
-  }).join('');
-
-  document.getElementById('itin-label').textContent = T.itin;
-}
-
-// =====================================================================
-// RENDER I18N (static text)
-// =====================================================================
-function renderI18N() {
-  const T = I18N[lang];
-  document.getElementById('brand-eyebrow').textContent = T.eyebrow;
-  document.getElementById('wc-label').textContent      = T.wc;
-  document.getElementById('legend-day').textContent    = T.legend_day;
-  document.getElementById('legend-night').textContent  = T.legend_night;
-  document.getElementById('footer').textContent        = T.footer;
-
-  buildWatchGrid();
-}
-
-// =====================================================================
-// UPDATE (per-second)
-// =====================================================================
-function updateWatches() {
-  document.querySelectorAll('.watch-canvas[data-tz]').forEach(canvas => {
-    drawWatch(canvas, canvas.dataset.tz);
-  });
-  document.querySelectorAll('[data-digital]').forEach(el => {
-    el.textContent = fmtDigital(el.dataset.digital);
-  });
-}
-
-// =====================================================================
-// CONTROLS
-// =====================================================================
-function setLang(l) {
-  lang = l;
-  document.getElementById('btn-jp').classList.toggle('active', l === 'jp');
-  document.getElementById('btn-en').classList.toggle('active', l === 'en');
-  renderI18N();
-  renderPhase();
-  renderItinerary();
-}
-
-function setTZ(t) {
-  const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const newTZ = t === 'jst' ? 'Asia/Tokyo' : localTZ;
-  displayTZ = newTZ;
-  const matchIdx = REGIONS.findIndex(r => r.tz === newTZ);
-  selectedRegionIdx = matchIdx;
-  document.querySelectorAll('.watch-item').forEach((el, i) => {
-    el.classList.toggle('tz-active', i === matchIdx);
-  });
-  document.getElementById('btn-jst').classList.toggle('active', t === 'jst');
-  document.getElementById('btn-local').classList.toggle('active', t === 'local');
-  updateWCHint();
-  renderItinerary();
-}
-
-// =====================================================================
-// MAIN LOOP
-// =====================================================================
-let prevSec = -1;
-function tick() {
-  const sec = new Date().getSeconds();
-  renderPhase();
-  updateWatches();
-  if (sec % 30 === 0 && sec !== prevSec) {
-    prevSec = sec;
-    renderItinerary();
+    document.getElementById('dn-itin-label').textContent = T.itin;
   }
-}
 
-// Init
-buildSkyArcStatic();
-renderI18N();
-renderPhase();
-renderItinerary();
-setInterval(tick, 1000);
+  function updateBasisLabel() {
+    const T = I18N[lang];
+    const nameEl = document.getElementById('dn-basis-name');
+    if (tzMode === 'jst') {
+      nameEl.textContent = T.basis_jst;
+    } else {
+      const diffStr = computeJSTDiff(displayTZ);
+      nameEl.textContent = `${T.basis_local} · ${displayTZ} (${diffStr})`;
+    }
+  }
+
+  window.dnSetLang = function (l) {
+    lang = l;
+    document.getElementById('dn-btn-jp').classList.toggle('active', l === 'jp');
+    document.getElementById('dn-btn-en').classList.toggle('active', l === 'en');
+    document.getElementById('dn-legend-day').textContent = I18N[lang].legend_day;
+    document.getElementById('dn-legend-night').textContent = I18N[lang].legend_night;
+    updateBasisLabel();
+    renderPhase();
+    renderItinerary();
+  };
+
+  window.dnSetTZ = function (t) {
+    tzMode = t;
+    const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    displayTZ = t === 'jst' ? 'Asia/Tokyo' : localTZ;
+    document.getElementById('dn-btn-jst').classList.toggle('active', t === 'jst');
+    document.getElementById('dn-btn-local').classList.toggle('active', t === 'local');
+    updateBasisLabel();
+    renderItinerary();
+  };
+
+  let prevSec = -1;
+  function tick() {
+    const sec = new Date().getSeconds();
+    renderPhase();
+    if (sec % 30 === 0 && sec !== prevSec) {
+      prevSec = sec;
+      renderItinerary();
+    }
+  }
+
+  // Init
+  document.getElementById('dn-btn-jp').classList.toggle('active', lang === 'jp');
+  document.getElementById('dn-btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('dn-legend-day').textContent = I18N[lang].legend_day;
+  document.getElementById('dn-legend-night').textContent = I18N[lang].legend_night;
+  buildSkyArcStatic();
+
+  const detectedTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (detectedTZ !== 'Asia/Tokyo') {
+    dnSetTZ('local');
+  } else {
+    updateBasisLabel();
+  }
+  renderPhase();
+  renderItinerary();
+  setInterval(tick, 1000);
+})();
+
+/* =====================================================================
+   WATERMARK WIDGET
+   ===================================================================== */
+(function () {
+  const DATA = {"21":{"0":10.0,"1":81.0,"2":6.0,"3":3.0},"22":{"0":10.0,"1":81.0,"2":6.0,"3":3.0},"23":{"0":10.01,"1":80.99,"2":6.0,"3":3.0},"24":{"-1":0.01,"0":10.03,"1":80.96,"2":6.0,"3":3.0},"25":{"-1":0.02,"0":10.08,"1":80.91,"2":5.99,"3":3.0},"26":{"-2":0.01,"-1":0.03,"0":10.16,"1":80.82,"2":5.99,"3":2.99},"27":{"-2":0.01,"-1":0.06,"0":10.28,"1":80.68,"2":5.98,"3":2.99},"28":{"-3":0.01,"-2":0.01,"-1":0.1,"0":10.47,"1":80.47,"2":5.96,"3":2.98},"29":{"-3":0.01,"-2":0.03,"-1":0.14,"0":10.72,"1":80.19,"2":5.94,"3":2.97},"30":{"-3":0.02,"-2":0.03,"-1":0.21,"0":11.05,"1":79.82,"2":5.91,"3":2.96},"31":{"-3":0.02,"-2":0.05,"-1":0.3,"0":11.47,"1":79.34,"2":5.88,"3":2.94},"32":{"-3":0.03,"-2":0.07,"-1":0.4,"0":11.99,"1":78.76,"2":5.83,"3":2.92},"33":{"-3":0.04,"-2":0.09,"-1":0.53,"0":12.64,"1":78.03,"2":5.78,"3":2.89},"34":{"-3":0.06,"-2":0.11,"-1":0.68,"0":13.41,"1":77.17,"2":5.71,"3":2.86},"35":{"-3":0.07,"-2":0.15,"-1":0.86,"0":14.32,"1":76.14,"2":5.64,"3":2.82},"36":{"-3":0.09,"-2":0.18,"-1":1.08,"0":15.39,"1":74.93,"2":5.55,"3":2.78},"37":{"-3":0.11,"-2":0.22,"-1":1.33,"0":16.64,"1":73.53,"2":5.45,"3":2.72},"38":{"-3":0.13,"-2":0.27,"-1":1.62,"0":18.06,"1":71.93,"2":5.33,"3":2.66},"39":{"-3":0.16,"-2":0.32,"-1":1.94,"0":19.69,"1":70.1,"2":5.19,"3":2.6},"40":{"-3":0.19,"-2":0.39,"-1":2.3,"0":21.52,"1":68.04,"2":5.04,"3":2.52},"41":{"-3":0.23,"-2":0.45,"-1":2.72,"0":23.58,"1":65.72,"2":4.87,"3":2.43},"42":{"-3":0.26,"-2":0.53,"-1":3.18,"0":25.89,"1":63.13,"2":4.67,"3":2.34},"43":{"-3":0.31,"-2":0.61,"-1":3.69,"0":28.44,"1":60.25,"2":4.47,"3":2.23},"44":{"-3":0.35,"-2":0.71,"-1":4.26,"0":31.27,"1":57.07,"2":4.23,"3":2.11},"45":{"-3":0.41,"-2":0.81,"-1":4.88,"0":34.39,"1":53.56,"2":3.97,"3":1.98},"46":{"-3":0.46,"-2":0.93,"-1":5.56,"0":37.8,"1":49.72,"2":3.69,"3":1.84},"47":{"-3":0.53,"-2":1.05,"-1":6.3,"0":41.53,"1":45.53,"2":3.37,"3":1.69},"48":{"-3":0.59,"-2":1.19,"-1":7.12,"0":45.59,"1":40.96,"2":4.55},"49":{"-3":0.67,"-2":1.33,"-1":8.0,"0":50.0,"1":40.0},"50":{"-3":5.0,"-2":10.0,"-1":35.0,"0":50.0},"51":{"0":33.33,"1":66.67},"52":{"0":33.33,"1":66.67},"53":{"-2":0.01,"-1":0.01,"0":33.34,"1":66.64},"54":{"-2":0.01,"-1":0.04,"0":33.35,"1":66.6},"55":{"-3":0.01,"-2":0.02,"-1":0.1,"0":33.38,"1":66.49},"56":{"-3":0.02,"-2":0.04,"-1":0.19,"0":33.42,"1":66.33},"57":{"-3":0.04,"-2":0.07,"-1":0.33,"0":33.49,"1":66.07},"58":{"-3":0.06,"-2":0.12,"-1":0.52,"0":33.59,"1":65.71},"59":{"-3":0.09,"-2":0.17,"-1":0.78,"0":33.72,"1":65.24},"60":{"-3":0.12,"-2":0.25,"-1":1.11,"0":33.88,"1":64.64},"61":{"-3":0.17,"-2":0.34,"-1":1.53,"0":34.08,"1":63.88},"62":{"-3":0.23,"-2":0.45,"-1":2.03,"0":34.33,"1":62.96},"63":{"-3":0.29,"-2":0.59,"-1":2.64,"0":34.63,"1":61.85},"64":{"-3":0.37,"-2":0.75,"-1":3.36,"0":34.99,"1":60.53},"65":{"-3":0.47,"-2":0.93,"-1":4.2,"0":35.4,"1":59.0},"66":{"-3":0.57,"-2":1.15,"-1":5.17,"0":35.88,"1":57.23},"67":{"-3":0.7,"-2":1.39,"-1":6.27,"0":36.43,"1":55.21},"68":{"-3":0.84,"-2":1.67,"-1":7.53,"0":37.05,"1":52.91},"69":{"-3":0.99,"-2":1.99,"-1":8.94,"0":37.75,"1":50.33},"70":{"-3":1.17,"-2":2.34,"-1":10.51,"0":38.52,"1":47.46},"71":{"-3":1.36,"-2":2.73,"-1":12.27,"0":39.39,"1":44.25},"72":{"-3":1.58,"-2":3.16,"-1":14.21,"0":40.35,"1":40.7},"73":{"-3":1.82,"-2":3.63,"-1":16.34,"0":41.4,"1":36.81},"74":{"-3":2.08,"-2":4.15,"-1":18.68,"0":42.56,"1":32.53},"75":{"-3":2.36,"-2":4.72,"-1":21.23,"0":43.82,"1":27.87},"76":{"-3":2.67,"-2":5.33,"-1":24.0,"0":45.19,"1":22.81},"77":{"-3":3.0,"-2":6.0,"-1":27.01,"0":46.67,"1":17.32},"78":{"-3":3.36,"-2":6.73,"-1":30.25,"0":48.27,"1":11.39},"79":{"-3":3.75,"-2":7.5,"-1":33.75,"0":50.0,"1":5.0},"80":{"-3":7.0,"-2":14.0,"-1":49.0,"0":30.0}};
+
+  function esc(v) {
+    return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function wmOf(w, a, ac) { return Math.round((w + a + ac) / 3); }
+  function getRow(wm) { return DATA[String(clamp(wm, 21, 80))]; }
+  function weightedRandom(row) {
+    const entries = Object.entries(row);
+    let r = Math.random() * 100;
+    for (const [k, v] of entries) { r -= v; if (r <= 0) return parseInt(k, 10); }
+    return parseInt(entries[entries.length - 1][0], 10);
+  }
+  function offStr(off) { return off > 0 ? '+' + off : String(off); }
+  function offColor(off) {
+    return off > 0 ? 'var(--green)' : off < 0 ? 'var(--ember)' : 'var(--parchment)';
+  }
+  function id(x) { return document.getElementById(x); }
+
+  // ── Persistence ──────────────────────────────────────────────
+  const STORE_KEY = 'solisium-wm-state-v1';
+  function saveState() {
+    const state = {
+      c: [id('wm-c-weapon').value, id('wm-c-armor').value, id('wm-c-acc').value],
+      s: [id('wm-s-weapon').value, id('wm-s-armor').value, id('wm-s-acc').value, id('wm-s-target').value, id('wm-s-trials').value],
+      t: id('wm-t-wm').value,
+    };
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      if (state.c) { id('wm-c-weapon').value = state.c[0]; id('wm-c-armor').value = state.c[1]; id('wm-c-acc').value = state.c[2]; }
+      if (state.s) {
+        id('wm-s-weapon').value = state.s[0]; id('wm-s-armor').value = state.s[1]; id('wm-s-acc').value = state.s[2];
+        id('wm-s-target').value = state.s[3]; id('wm-s-trials').value = state.s[4];
+      }
+      if (state.t) id('wm-t-wm').value = state.t;
+    } catch (e) {}
+  }
+
+  // ── Tab switching ────────────────────────────────────────────
+  document.querySelectorAll('.wm-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.wm-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.wm-tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      id('wm-tab-' + tab).classList.add('active');
+      if (tab === 'table') {
+        if (!heatBuilt) buildHeatmap();
+        updateDetailTable();
+      }
+    });
+  });
+
+  // ── Tab 1: Calculator ────────────────────────────────────────
+  function calcWatermark() {
+    const w  = parseInt(id('wm-c-weapon').value, 10);
+    const a  = parseInt(id('wm-c-armor').value, 10);
+    const ac = parseInt(id('wm-c-acc').value, 10);
+    if (isNaN(w) || isNaN(a) || isNaN(ac)) return;
+    if (w < 21 || a < 21 || ac < 21 || w > 80 || a > 80 || ac > 80) return;
+
+    const wm = wmOf(w, a, ac);
+    id('wm-value').textContent = wm;
+    id('wm-prob-wm-label').textContent = wm;
+    id('wm-calc-result').style.display = 'block';
+
+    const cats = [
+      { name: '武器',       val: w  },
+      { name: '防具',       val: a  },
+      { name: 'アクセサリー', val: ac },
+    ];
+    const minIL = Math.min(w, a, ac);
+    const breakdown = id('wm-breakdown');
+    breakdown.textContent = '';
+    cats.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'wm-il-row';
+      const catEl = document.createElement('span');
+      catEl.className = 'wm-il-cat';
+      catEl.textContent = c.name;
+      row.appendChild(catEl);
+      const valEl = document.createElement('span');
+      valEl.className = 'wm-il-val';
+      valEl.textContent = c.val;
+      valEl.style.color = c.val === minIL ? 'var(--brass)' : 'var(--parchment)';
+      row.appendChild(valEl);
+      if (c.val === minIL) {
+        const tag = document.createElement('span');
+        tag.textContent = '優先';
+        tag.style.cssText = 'display:inline-block;background:rgba(201,161,92,.18);border:1px solid rgba(201,161,92,.5);color:var(--brass-bright);border-radius:4px;padding:1px 7px;font-size:.68rem;font-weight:600;margin-left:4px';
+        row.appendChild(tag);
+      }
+      breakdown.appendChild(row);
+    });
+
+    const weakCats = cats.filter(c => c.val === minIL).map(c => c.name);
+    const hintEl = id('wm-weak-hint');
+    hintEl.textContent = '';
+    if (weakCats.length < 3) {
+      const strong = document.createElement('strong');
+      strong.textContent = weakCats.join(' / ') + ' (IL ' + minIL + ')';
+      hintEl.appendChild(document.createTextNode('最も低いカテゴリ: '));
+      hintEl.appendChild(strong);
+      hintEl.appendChild(document.createTextNode(' —— こちらを優先して強化しましょう。'));
+    } else {
+      hintEl.textContent = '全カテゴリが均等です。どれを強化しても効率は同じです。';
+    }
+
+    renderProbTable(wm, 'wm-calc-prob-body', true);
+    id('wm-calc-prob-card').style.display = 'block';
+    saveState();
+  }
+
+  function renderProbTable(wm, tbodyId, showCumulative) {
+    const row = getRow(wm);
+    if (!row) return;
+    const offsets = Object.keys(row).map(Number).sort((a, b) => b - a);
+    const maxProb = Math.max(...Object.values(row));
+    const tbody = id(tbodyId);
+    tbody.textContent = '';
+    let cumulative = 0;
+
+    offsets.forEach(off => {
+      const prob = row[String(off)];
+      cumulative += prob;
+      const il = wm + off;
+      const barW = Math.round((prob / maxProb) * 80);
+      const color = offColor(off);
+
+      const tr = document.createElement('tr');
+      const tdIL = document.createElement('td');
+      const strong = document.createElement('strong');
+      strong.textContent = il;
+      tdIL.appendChild(strong);
+      tr.appendChild(tdIL);
+
+      const tdOff = document.createElement('td');
+      tdOff.style.color = color;
+      tdOff.textContent = offStr(off);
+      tr.appendChild(tdOff);
+
+      const tdProb = document.createElement('td');
+      const barDiv = document.createElement('div');
+      barDiv.className = 'wm-bar-cell';
+      const span = document.createElement('span');
+      span.textContent = prob.toFixed(2) + '%';
+      const bar = document.createElement('div');
+      bar.className = 'wm-mini-bar';
+      bar.style.width = barW + 'px';
+      bar.style.background = color;
+      barDiv.appendChild(span);
+      barDiv.appendChild(bar);
+      tdProb.appendChild(barDiv);
+      tr.appendChild(tdProb);
+
+      if (showCumulative) {
+        const tdCum = document.createElement('td');
+        tdCum.style.color = 'var(--parchment-dim)';
+        tdCum.textContent = cumulative.toFixed(2) + '%';
+        tr.appendChild(tdCum);
+      }
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  ['wm-c-weapon', 'wm-c-armor', 'wm-c-acc'].forEach(idName =>
+    id(idName).addEventListener('input', calcWatermark)
+  );
+
+  // ── Tab 2: Simulation ────────────────────────────────────────
+  id('wm-s-target').addEventListener('input', function () {
+    id('wm-s-target-val').textContent = this.value;
+    saveState();
+  });
+  id('wm-s-trials').addEventListener('input', function () {
+    id('wm-s-trials-val').textContent = Number(this.value).toLocaleString();
+    saveState();
+  });
+  ['wm-s-weapon', 'wm-s-armor', 'wm-s-acc'].forEach(idName =>
+    id(idName).addEventListener('input', saveState)
+  );
+
+  window.wmRunSimulation = function () {
+    const w0  = parseInt(id('wm-s-weapon').value, 10) || 60;
+    const a0  = parseInt(id('wm-s-armor').value, 10)  || 60;
+    const ac0 = parseInt(id('wm-s-acc').value, 10)    || 60;
+    const target = parseInt(id('wm-s-target').value, 10);
+    const trials = parseInt(id('wm-s-trials').value, 10);
+
+    if (wmOf(w0, a0, ac0) >= target) {
+      alert('現在の WM はすでに目標以上です。');
+      return;
+    }
+
+    id('wm-sim-result').style.display = 'none';
+    id('wm-sim-progress').style.display = 'block';
+    id('wm-sim-btn').disabled = true;
+
+    setTimeout(() => {
+      const results = [];
+      for (let t = 0; t < trials; t++) {
+        let w = w0, a = a0, ac = ac0;
+        let count = 0;
+        while (count < 500000) {
+          const wm = wmOf(w, a, ac);
+          if (wm >= target) break;
+          const row = getRow(wm);
+          const offset = weightedRandom(row);
+          const newIL = wm + offset;
+          const cat = Math.floor(Math.random() * 3);
+          if (cat === 0)      w  = Math.max(w, newIL);
+          else if (cat === 1) a  = Math.max(a, newIL);
+          else                ac = Math.max(ac, newIL);
+          count++;
+        }
+        results.push(count);
+      }
+
+      results.sort((x, y) => x - y);
+      const n = results.length;
+      const mean   = results.reduce((s, v) => s + v, 0) / n;
+      const median = results[Math.floor(n * 0.5)];
+      const p75    = results[Math.floor(n * 0.75)];
+      const p90    = results[Math.floor(n * 0.90)];
+      const p95    = results[Math.floor(n * 0.95)];
+
+      id('wm-sim-mean').textContent   = mean.toFixed(1);
+      id('wm-sim-median').textContent = median;
+      id('wm-sim-p90').textContent    = p90;
+
+      const pEl = id('wm-sim-percentiles');
+      pEl.textContent = '';
+      [
+        ['75%ile', p75], ['90%ile', p90], ['95%ile', p95], ['最大', results[n - 1]],
+      ].forEach(([label, val], i) => {
+        if (i > 0) pEl.appendChild(document.createTextNode('   '));
+        pEl.appendChild(document.createTextNode(label + ': '));
+        const s = document.createElement('strong');
+        s.textContent = val;
+        pEl.appendChild(s);
+      });
+
+      drawHistogram(results);
+      id('wm-sim-progress').style.display = 'none';
+      id('wm-sim-result').style.display = 'block';
+      id('wm-sim-btn').disabled = false;
+      saveState();
+    }, 20);
+  };
+
+  function drawHistogram(results) {
+    const canvas = id('wm-sim-chart');
+    const W = canvas.parentElement.clientWidth || 500;
+    const H = 180;
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    const min = results[0];
+    const max = results[results.length - 1];
+    const BUCKETS = Math.min(50, max - min + 1);
+    const bSize = Math.max(1, Math.ceil((max - min + 1) / BUCKETS));
+    const counts = new Array(BUCKETS).fill(0);
+    for (const v of results) {
+      counts[Math.min(BUCKETS - 1, Math.floor((v - min) / bSize))]++;
+    }
+    const maxCount = Math.max(...counts);
+
+    const pad = { top: 10, bottom: 24, left: 6, right: 6 };
+    const cW = W - pad.left - pad.right;
+    const cH = H - pad.top - pad.bottom;
+    const barW = cW / BUCKETS;
+
+    ctx.fillStyle = '#11151f';
+    ctx.fillRect(0, 0, W, H);
+
+    counts.forEach((count, i) => {
+      if (!count) return;
+      const bH = (count / maxCount) * cH;
+      const t = i / BUCKETS;
+      ctx.fillStyle = `hsl(${38 - t * 8},${55 - t * 15}%,${45 + t * 15}%)`;
+      ctx.fillRect(pad.left + i * barW + 1, pad.top + cH - bH, barW - 2, bH);
+    });
+
+    ctx.strokeStyle = '#30363d';
+    ctx.beginPath();
+    ctx.moveTo(pad.left, pad.top + cH);
+    ctx.lineTo(pad.left + cW, pad.top + cH);
+    ctx.stroke();
+
+    ctx.fillStyle = '#a89f86';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    [0, 0.25, 0.5, 0.75, 1].forEach(t => {
+      const v = Math.round(min + t * (max - min));
+      ctx.fillText(v, pad.left + t * cW, H - 6);
+    });
+  }
+
+  // ── Tab 3: Detail table ──────────────────────────────────────
+  id('wm-t-wm').addEventListener('input', function () {
+    id('wm-t-wm-val').textContent = this.value;
+    updateDetailTable();
+    saveState();
+  });
+
+  function updateDetailTable() {
+    const wm = parseInt(id('wm-t-wm').value, 10);
+    id('wm-t-wm-val').textContent = wm;
+    const row = DATA[String(wm)];
+    if (!row) return;
+
+    const offsets = Object.keys(row).map(Number).sort((a, b) => b - a);
+    const maxProb = Math.max(...Object.values(row));
+    const tbody = id('wm-detail-body');
+    tbody.textContent = '';
+
+    offsets.forEach(off => {
+      const prob = row[String(off)];
+      const il = wm + off;
+      const color = offColor(off);
+      const barW = Math.round((prob / maxProb) * 100);
+
+      const tr = document.createElement('tr');
+      const tdIL = document.createElement('td');
+      const s = document.createElement('strong');
+      s.textContent = il;
+      tdIL.appendChild(s);
+      tr.appendChild(tdIL);
+
+      const tdOff = document.createElement('td');
+      tdOff.style.color = color;
+      tdOff.textContent = offStr(off);
+      tr.appendChild(tdOff);
+
+      const tdBar = document.createElement('td');
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.alignItems = 'center';
+      wrap.style.gap = '8px';
+      const bar = document.createElement('div');
+      bar.className = 'wm-mini-bar';
+      bar.style.width = barW + 'px';
+      bar.style.background = color;
+      const pct = document.createElement('span');
+      pct.textContent = prob.toFixed(2) + '%';
+      wrap.appendChild(bar);
+      wrap.appendChild(pct);
+      tdBar.appendChild(wrap);
+      tr.appendChild(tdBar);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Tab 3: Heatmap ───────────────────────────────────────────
+  let heatBuilt = false;
+
+  function buildHeatmap() {
+    heatBuilt = true;
+    const allOffsets = new Set();
+    Object.values(DATA).forEach(r => Object.keys(r).forEach(k => allOffsets.add(parseInt(k, 10))));
+    const offsets = [...allOffsets].sort((a, b) => b - a);
+    const wms = Object.keys(DATA).map(Number).sort((a, b) => a - b);
+
+    let maxProb = 0;
+    wms.forEach(wm => Object.values(DATA[String(wm)]).forEach(v => { if (v > maxProb) maxProb = v; }));
+
+    const table = id('wm-heat-table');
+    table.textContent = '';
+
+    const thead = table.createTHead();
+    const hRow = thead.insertRow();
+    const thWM = document.createElement('th');
+    thWM.className = 'wm-col-header';
+    thWM.textContent = 'WM';
+    hRow.appendChild(thWM);
+    offsets.forEach(off => {
+      const th = document.createElement('th');
+      th.textContent = offStr(off);
+      th.style.color = offColor(off);
+      hRow.appendChild(th);
+    });
+
+    const tbody = table.createTBody();
+    wms.forEach(wm => {
+      const row = DATA[String(wm)];
+      const tr = tbody.insertRow();
+      const tdWM = document.createElement('td');
+      tdWM.className = 'wm-col';
+      tdWM.textContent = wm;
+      tr.appendChild(tdWM);
+
+      offsets.forEach(off => {
+        const td = document.createElement('td');
+        const prob = row[String(off)];
+        if (!prob) {
+          td.style.color = 'var(--line)';
+          td.textContent = '—';
+        } else {
+          const alpha = (0.08 + (prob / maxProb) * 0.82).toFixed(2);
+          const hue = off > 0 ? 130 : off === 0 ? 38 : 0;
+          const sat = off === 0 ? 55 : 65;
+          td.style.background = 'hsla(' + hue + ',' + sat + '%,50%,' + alpha + ')';
+          td.style.color = 'var(--parchment)';
+          td.textContent = prob.toFixed(1);
+        }
+        tr.appendChild(td);
+      });
+    });
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  loadState();
+  id('wm-s-target-val').textContent = id('wm-s-target').value;
+  id('wm-s-trials-val').textContent = Number(id('wm-s-trials').value).toLocaleString();
+  calcWatermark();
+  updateDetailTable();
+})();
 </script>
 </body>
 </html>
