@@ -542,18 +542,18 @@
 <header class="site-header">
   <div class="site-header-inner">
     <a href="index.html" class="site-brand">
-      <span class="site-brand-eyebrow">ソリシウム — Throne and Liberty</span>
+      <span class="site-brand-eyebrow" data-site-i18n="brand_eyebrow">ソリシウム — Throne and Liberty</span>
       <span class="site-brand-title">SOLISIUM <span class="amp">/</span> COMPENDIUM</span>
     </a>
   </div>
   <nav class="site-tabbar" aria-label="ページ切替">
-    <a href="index.html" class="site-tab active"><span class="site-tab-icon">🌗</span>暦 & 強化計算</a>
-    <a href="qa.html" class="site-tab"><span class="site-tab-icon">📜</span>記憶の書庫</a>
+    <a href="index.html" class="site-tab active"><span class="site-tab-icon">🌗</span><span data-site-i18n="tab_daynight">暦 & 強化計算</span></a>
+    <a href="qa.html" class="site-tab"><span class="site-tab-icon">📜</span><span data-site-i18n="tab_qa">記憶の書庫</span></a>
   </nav>
 </header>
 
 <main class="hub-main">
-  <p class="hub-intro">Throne and Liberty 非公式攻略ツール集。ゲーム内の昼夜サイクルとギア強化(Watermark)ドロップ確率を、ひとつの画面でまとめて確認できます。</p>
+  <p class="hub-intro" data-site-i18n="hub_intro">Throne and Liberty 非公式攻略ツール集。ゲーム内の昼夜サイクルとギア強化(Watermark)ドロップ確率を、ひとつの画面でまとめて確認できます。</p>
 
   <div class="hub-grid">
 
@@ -786,9 +786,39 @@
   </div>
 </main>
 
-<footer class="site-footer">Solisium Compendium — Throne and Liberty 非公式攻略ツール集</footer>
+<footer class="site-footer" data-site-i18n="footer">Solisium Compendium — Throne and Liberty 非公式攻略ツール集</footer>
 
 <script>
+/* =====================================================================
+   SITE CHROME (brand / tab nav / intro / footer) — localized once on
+   load from the browser's language, shared in spirit with qa.html.
+   ===================================================================== */
+(function () {
+  const SITE_I18N = {
+    jp: {
+      brand_eyebrow: "ソリシウム — Throne and Liberty",
+      tab_daynight: "暦 & 強化計算",
+      tab_qa: "記憶の書庫",
+      hub_intro: "Throne and Liberty 非公式攻略ツール集。ゲーム内の昼夜サイクルとギア強化(Watermark)ドロップ確率を、ひとつの画面でまとめて確認できます。",
+      footer: "Solisium Compendium — Throne and Liberty 非公式攻略ツール集",
+    },
+    en: {
+      brand_eyebrow: "Solisium — Throne and Liberty",
+      tab_daynight: "Almanac & Calculator",
+      tab_qa: "Memory Archive",
+      hub_intro: "An unofficial Throne and Liberty toolkit. Check the game's day/night cycle and gear-enhancement (Watermark) drop odds together on one screen.",
+      footer: "Solisium Compendium — Unofficial Throne and Liberty Toolkit",
+    }
+  };
+  const browserLang = (navigator.language || '').toLowerCase();
+  const lang = browserLang.startsWith('ja') ? 'jp' : 'en';
+  const T = SITE_I18N[lang];
+  document.querySelectorAll('[data-site-i18n]').forEach(el => {
+    const key = el.dataset.siteI18n;
+    if (T[key] !== undefined) el.textContent = T[key];
+  });
+})();
+
 /* =====================================================================
    DAYNIGHT WIDGET
    ===================================================================== */

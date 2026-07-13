@@ -276,13 +276,13 @@
 <header class="site-header">
   <div class="site-header-inner">
     <a href="index.html" class="site-brand">
-      <span class="site-brand-eyebrow">ソリシウム — Throne and Liberty</span>
+      <span class="site-brand-eyebrow" data-site-i18n="brand_eyebrow">ソリシウム — Throne and Liberty</span>
       <span class="site-brand-title">SOLISIUM <span class="amp">/</span> COMPENDIUM</span>
     </a>
   </div>
   <nav class="site-tabbar" aria-label="ページ切替">
-    <a href="index.html" class="site-tab"><span class="site-tab-icon">🌗</span>暦 & 強化計算</a>
-    <a href="qa.html" class="site-tab active"><span class="site-tab-icon">📜</span>記憶の書庫</a>
+    <a href="index.html" class="site-tab"><span class="site-tab-icon">🌗</span><span data-site-i18n="tab_daynight">暦 & 強化計算</span></a>
+    <a href="qa.html" class="site-tab active"><span class="site-tab-icon">📜</span><span data-site-i18n="tab_qa">記憶の書庫</span></a>
   </nav>
 </header>
 
@@ -295,8 +295,8 @@
       <div class="orn-line"></div>
     </div>
     <h1>Earth's Memory</h1>
-    <p class="subtitle">記 憶 の 書 庫</p>
-    <p class="attr">Throne and Liberty — クイズ設問検索 &nbsp;|&nbsp; 原著コンパイル: Kninebeat 氏</p>
+    <p class="subtitle" id="qa-subtitle">記 憶 の 書 庫</p>
+    <p class="attr" id="qa-attr">Throne and Liberty — クイズ設問検索 &nbsp;|&nbsp; 原著コンパイル: Kninebeat 氏</p>
   </header>
 
   <section class="search-wrap">
@@ -322,8 +322,8 @@
 </div>
 
 <footer class="site-footer">
-  原著コンパイル: Kninebeat 氏 &nbsp;·&nbsp;
-  <a href="index.html" style="color:var(--brass);opacity:.8;">← 暦・強化計算に戻る</a>
+  <span id="qa-footer-attr">原著コンパイル: Kninebeat 氏</span> &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--brass);opacity:.8;" id="qa-footer-back">← 暦・強化計算に戻る</a>
 </footer>
 
 <script>
@@ -335,10 +335,67 @@
   var res  = document.getElementById('res');
   var cnt  = document.getElementById('cnt');
 
+  var QA_I18N = {
+    ja: {
+      subtitle: '記 憶 の 書 庫',
+      attr: 'Throne and Liberty — クイズ設問検索  |  原著コンパイル: Kninebeat 氏',
+      footer_attr: '原著コンパイル: Kninebeat 氏',
+      footer_back: '← 暦・強化計算に戻る',
+      placeholder: '記憶を探す…　日本語・英語どちらでも',
+      empty_msg: '該当する記憶が見つかりませんでした。別のキーワードでお試しください。',
+      error_msg: 'データの読み込みに失敗しました。earths_memory_qa.json が同じディレクトリにあるか確認してください。',
+      count_suffix: ' 件',
+    },
+    en: {
+      subtitle: 'A R C H I V E   O F   M E M O R I E S',
+      attr: 'Throne and Liberty — Quiz Question Search  |  Original compilation: Kninebeat',
+      footer_attr: 'Original compilation: Kninebeat',
+      footer_back: '← Back to Almanac & Calculator',
+      placeholder: 'Search memories…  English or Japanese',
+      empty_msg: 'No matching memories found. Try a different keyword.',
+      error_msg: 'Failed to load data. Please check that earths_memory_qa.json is in the same directory.',
+      count_suffix: ' results',
+    }
+  };
+
+  var SITE_I18N = {
+    jp: {
+      brand_eyebrow: 'ソリシウム — Throne and Liberty',
+      tab_daynight: '暦 & 強化計算',
+      tab_qa: '記憶の書庫',
+    },
+    en: {
+      brand_eyebrow: 'Solisium — Throne and Liberty',
+      tab_daynight: 'Almanac & Calculator',
+      tab_qa: 'Memory Archive',
+    }
+  };
+
+  var browserLang = (navigator.language || '').toLowerCase();
   var data = [];
   var fuse = null;
   var timer;
-  var lang = 'ja';
+  var lang = browserLang.indexOf('ja') === 0 ? 'ja' : 'en';
+
+  (function applySiteChrome() {
+    var T = SITE_I18N[browserLang.indexOf('ja') === 0 ? 'jp' : 'en'];
+    var nodes = document.querySelectorAll('[data-site-i18n]');
+    for (var i = 0; i < nodes.length; i++) {
+      var key = nodes[i].getAttribute('data-site-i18n');
+      if (T[key] !== undefined) nodes[i].textContent = T[key];
+    }
+  }());
+
+  function applyQaChrome() {
+    var T = QA_I18N[lang];
+    document.getElementById('qa-subtitle').textContent = T.subtitle;
+    document.getElementById('qa-attr').textContent = T.attr;
+    document.getElementById('qa-footer-attr').textContent = T.footer_attr;
+    document.getElementById('qa-footer-back').textContent = T.footer_back;
+    qEl.placeholder = T.placeholder;
+    document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  }
 
   function el(tag, cls) {
     var e = document.createElement(tag);
@@ -406,7 +463,7 @@
       var sym2 = el('div', 'sym2');
       sym2.textContent = '📜';
       var msg = el('p');
-      msg.textContent = '該当する記憶が見つかりませんでした。別のキーワードでお試しください。';
+      msg.textContent = QA_I18N[lang].empty_msg;
       empty.appendChild(sym2);
       empty.appendChild(msg);
       res.appendChild(empty);
@@ -414,7 +471,7 @@
       var strong0 = el('strong', 'cnt-num');
       strong0.textContent = '0';
       cnt.prepend(strong0);
-      cnt.appendChild(document.createTextNode(' 件'));
+      cnt.appendChild(document.createTextNode(QA_I18N[lang].count_suffix));
       return;
     }
 
@@ -428,7 +485,7 @@
     var strong = el('strong', 'cnt-num');
     strong.textContent = String(items.length);
     cnt.appendChild(strong);
-    cnt.appendChild(document.createTextNode(' / ' + data.length + ' 件'));
+    cnt.appendChild(document.createTextNode(' / ' + data.length + QA_I18N[lang].count_suffix));
   }
 
   function doSearch(q) {
@@ -440,11 +497,7 @@
   function setLang(newLang) {
     if (lang === newLang) return;
     lang = newLang;
-    document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
-    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-    qEl.placeholder = lang === 'ja'
-      ? '記憶を探す…　日本語・英語どちらでも'
-      : 'Search memories…  English or Japanese';
+    applyQaChrome();
     makeFuse();
     doSearch(qEl.value.trim());
   }
@@ -466,6 +519,8 @@
     qEl.focus();
   });
 
+  applyQaChrome();
+
   fetch('./earths_memory_qa.json')
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (json) {
@@ -478,7 +533,7 @@
       while (res.firstChild) res.removeChild(res.firstChild);
       var d = el('div', 'empty');
       var p = el('p');
-      p.textContent = 'データの読み込みに失敗しました。earths_memory_qa.json が同じディレクトリにあるか確認してください。';
+      p.textContent = QA_I18N[lang].error_msg;
       d.appendChild(p);
       res.appendChild(d);
     });
