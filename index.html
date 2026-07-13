@@ -561,17 +561,13 @@
     <section class="widget widget-dn" id="widget-dn">
       <div class="widget-header">
         <div>
-          <span class="widget-eyebrow">DAY / NIGHT</span>
-          <h2 class="widget-title">暦</h2>
+          <span class="widget-eyebrow" id="dn-eyebrow">DAY / NIGHT</span>
+          <h2 class="widget-title" id="dn-title">暦</h2>
         </div>
         <div class="dn-controls">
           <div class="dn-control-group">
             <button class="dn-btn active" id="dn-btn-jp" onclick="dnSetLang('jp')">日本語</button>
             <button class="dn-btn" id="dn-btn-en" onclick="dnSetLang('en')">EN</button>
-          </div>
-          <div class="dn-control-group">
-            <button class="dn-btn active" id="dn-btn-jst" onclick="dnSetTZ('jst')">JST</button>
-            <button class="dn-btn" id="dn-btn-local" onclick="dnSetTZ('local')">LOCAL</button>
           </div>
         </div>
       </div>
@@ -831,6 +827,7 @@
 
   const I18N = {
     jp: {
+      eyebrow: "DAY / NIGHT", title: "暦",
       phase_tag: "現在の空",
       phase_day: "昼", phase_night: "夜",
       cd_until_night: "夜まであと", cd_until_day: "昼まであと",
@@ -842,6 +839,7 @@
       basis_jst: "日本 (JST)", basis_local: "ローカル時刻",
     },
     en: {
+      eyebrow: "DAY / NIGHT", title: "Almanac",
       phase_tag: "Current Sky",
       phase_day: "DAY", phase_night: "NIGHT",
       cd_until_night: "Until Night", cd_until_day: "Until Day",
@@ -1052,26 +1050,31 @@
     }
   }
 
+  function applyDnStaticText() {
+    const T = I18N[lang];
+    document.getElementById('dn-eyebrow').textContent = T.eyebrow;
+    document.getElementById('dn-title').textContent = T.title;
+    document.getElementById('dn-legend-day').textContent = T.legend_day;
+    document.getElementById('dn-legend-night').textContent = T.legend_night;
+  }
+
   window.dnSetLang = function (l) {
     lang = l;
     document.getElementById('dn-btn-jp').classList.toggle('active', l === 'jp');
     document.getElementById('dn-btn-en').classList.toggle('active', l === 'en');
-    document.getElementById('dn-legend-day').textContent = I18N[lang].legend_day;
-    document.getElementById('dn-legend-night').textContent = I18N[lang].legend_night;
+    applyDnStaticText();
     updateBasisLabel();
     renderPhase();
     renderItinerary();
   };
 
-  window.dnSetTZ = function (t) {
+  function dnSetTZ(t) {
     tzMode = t;
     const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
     displayTZ = t === 'jst' ? 'Asia/Tokyo' : localTZ;
-    document.getElementById('dn-btn-jst').classList.toggle('active', t === 'jst');
-    document.getElementById('dn-btn-local').classList.toggle('active', t === 'local');
     updateBasisLabel();
     renderItinerary();
-  };
+  }
 
   let prevSec = -1;
   function tick() {
@@ -1086,8 +1089,7 @@
   // Init
   document.getElementById('dn-btn-jp').classList.toggle('active', lang === 'jp');
   document.getElementById('dn-btn-en').classList.toggle('active', lang === 'en');
-  document.getElementById('dn-legend-day').textContent = I18N[lang].legend_day;
-  document.getElementById('dn-legend-night').textContent = I18N[lang].legend_night;
+  applyDnStaticText();
   buildSkyArcStatic();
 
   const detectedTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
