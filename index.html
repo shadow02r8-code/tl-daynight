@@ -619,22 +619,28 @@
       <div class="widget-header">
         <div>
           <span class="widget-eyebrow">GEAR ENHANCEMENT</span>
-          <h2 class="widget-title">強化計算</h2>
+          <h2 class="widget-title" data-i18n="wm_title">強化計算</h2>
+        </div>
+        <div class="dn-controls">
+          <div class="dn-control-group">
+            <button class="dn-btn active" id="wm-btn-jp" onclick="wmSetLang('jp')">日本語</button>
+            <button class="dn-btn" id="wm-btn-en" onclick="wmSetLang('en')">EN</button>
+          </div>
         </div>
       </div>
-      <p class="wm-source">データ出典: How to Level Up Gear by Aragon &amp; Kninebeat (2026-07-04)</p>
+      <p class="wm-source" data-i18n="wm_source">データ出典: How to Level Up Gear by Aragon &amp; Kninebeat (2026-07-04)</p>
 
       <div class="wm-tabs">
-        <button class="wm-tab-btn active" data-tab="calc">計算</button>
-        <button class="wm-tab-btn" data-tab="sim">シミュレーション</button>
-        <button class="wm-tab-btn" data-tab="table">確率表</button>
+        <button class="wm-tab-btn active" data-tab="calc" data-i18n="wm_tab_calc">計算</button>
+        <button class="wm-tab-btn" data-tab="sim" data-i18n="wm_tab_sim">シミュレーション</button>
+        <button class="wm-tab-btn" data-tab="table" data-i18n="wm_tab_table">確率表</button>
       </div>
 
       <!-- Tab 1: Calculator -->
       <div id="wm-tab-calc" class="wm-tab-panel active">
         <div class="wm-card">
-          <div class="wm-card-title">ウォーターマーク (WM) とは?</div>
-          <div class="wm-hint">
+          <div class="wm-card-title" data-i18n="wm_about_title">ウォーターマーク (WM) とは?</div>
+          <div class="wm-hint" data-i18n-html="wm_about_hint">
             <strong>Watermark</strong> = 武器 / 防具 / アクセサリー それぞれのカテゴリで<strong>これまでに入手した最高 IL</strong> を3つ平均した値 (端数切り捨て)。<br>
             次のドロップ IL はこの WM を基準に確率分布で決まります。<br>
             カテゴリ間の IL 差が大きいと全体 WM が頭打ちになるため、<strong>最も低いカテゴリを優先して強化する</strong>のが効率的です。
@@ -642,25 +648,25 @@
         </div>
 
         <div class="wm-card">
-          <div class="wm-card-title">現在の最高アイテムレベル</div>
+          <div class="wm-card-title" data-i18n="wm_current_il_title">現在の最高アイテムレベル</div>
           <div class="wm-input-grid">
             <div class="wm-field">
-              <label>武器 IL</label>
+              <label data-i18n="wm_lbl_weapon">武器 IL</label>
               <input type="number" id="wm-c-weapon" min="21" max="80" value="60">
             </div>
             <div class="wm-field">
-              <label>防具 IL</label>
+              <label data-i18n="wm_lbl_armor">防具 IL</label>
               <input type="number" id="wm-c-armor" min="21" max="80" value="60">
             </div>
             <div class="wm-field">
-              <label>アクセサリー IL</label>
+              <label data-i18n="wm_lbl_acc">アクセサリー IL</label>
               <input type="number" id="wm-c-acc" min="21" max="80" value="60">
             </div>
           </div>
         </div>
 
         <div class="wm-card" id="wm-calc-result" style="display:none">
-          <div class="wm-card-title">現在のウォーターマーク</div>
+          <div class="wm-card-title" data-i18n="wm_current_wm_title">現在のウォーターマーク</div>
           <div class="wm-display">
             <div>
               <div class="wm-big" id="wm-value">--</div>
@@ -672,14 +678,14 @@
         </div>
 
         <div class="wm-card" id="wm-calc-prob-card" style="display:none">
-          <div class="wm-card-title">次のドロップ確率 (WM <span id="wm-prob-wm-label">--</span> 基準)</div>
+          <div class="wm-card-title"><span data-i18n="wm_next_prob_prefix">次のドロップ確率 (WM</span> <span id="wm-prob-wm-label">--</span> <span data-i18n="wm_next_prob_suffix">基準)</span></div>
           <table class="wm-prob-table">
             <thead>
               <tr>
-                <th style="text-align:left">ドロップ IL</th>
-                <th>WMとの差</th>
-                <th>確率</th>
-                <th>累積確率</th>
+                <th style="text-align:left" data-i18n="wm_th_drop_il">ドロップ IL</th>
+                <th data-i18n="wm_th_diff">WMとの差</th>
+                <th data-i18n="wm_th_prob">確率</th>
+                <th data-i18n="wm_th_cumulative">累積確率</th>
               </tr>
             </thead>
             <tbody id="wm-calc-prob-body"></tbody>
@@ -690,59 +696,59 @@
       <!-- Tab 2: Simulation -->
       <div id="wm-tab-sim" class="wm-tab-panel">
         <div class="wm-card">
-          <div class="wm-card-title">シミュレーション設定</div>
-          <div class="wm-hint" style="margin-bottom:12px">
+          <div class="wm-card-title" data-i18n="wm_sim_settings_title">シミュレーション設定</div>
+          <div class="wm-hint" style="margin-bottom:12px" data-i18n="wm_sim_note">
             ※ ドロップカテゴリ (武器 / 防具 / アクセサリー) は均等 1/3 確率で割り当てると仮定しています。実際のゲーム内確率と異なる場合があります。
           </div>
           <div class="wm-input-grid">
             <div class="wm-field">
-              <label>武器 現在 IL</label>
+              <label data-i18n="wm_lbl_weapon_now">武器 現在 IL</label>
               <input type="number" id="wm-s-weapon" min="21" max="80" value="60">
             </div>
             <div class="wm-field">
-              <label>防具 現在 IL</label>
+              <label data-i18n="wm_lbl_armor_now">防具 現在 IL</label>
               <input type="number" id="wm-s-armor" min="21" max="80" value="60">
             </div>
             <div class="wm-field">
-              <label>アクセサリー 現在 IL</label>
+              <label data-i18n="wm_lbl_acc_now">アクセサリー 現在 IL</label>
               <input type="number" id="wm-s-acc" min="21" max="80" value="60">
             </div>
           </div>
           <div class="wm-range-row">
-            <label>目標 Watermark: <strong id="wm-s-target-val">65</strong></label>
+            <label><span data-i18n="wm_lbl_target">目標 Watermark:</span> <strong id="wm-s-target-val">65</strong></label>
             <input type="range" id="wm-s-target" min="22" max="80" value="65">
           </div>
           <div class="wm-range-row">
-            <label>試行回数: <strong id="wm-s-trials-val">10,000</strong></label>
+            <label><span data-i18n="wm_lbl_trials">試行回数:</span> <strong id="wm-s-trials-val">10,000</strong></label>
             <input type="range" id="wm-s-trials" min="1000" max="50000" step="1000" value="10000">
           </div>
-          <button class="wm-btn" id="wm-sim-btn" onclick="wmRunSimulation()">シミュレーション実行</button>
+          <button class="wm-btn" id="wm-sim-btn" onclick="wmRunSimulation()" data-i18n="wm_run_sim">シミュレーション実行</button>
         </div>
 
-        <div id="wm-sim-progress" class="wm-progress" style="display:none">計算中... しばらくお待ちください</div>
+        <div id="wm-sim-progress" class="wm-progress" style="display:none" data-i18n="wm_calculating">計算中... しばらくお待ちください</div>
 
         <div id="wm-sim-result" style="display:none">
           <div class="wm-card">
-            <div class="wm-card-title">シミュレーション結果</div>
+            <div class="wm-card-title" data-i18n="wm_sim_result_title">シミュレーション結果</div>
             <div class="wm-stats-grid">
               <div class="wm-stat-box">
                 <div class="wm-stat-value" id="wm-sim-mean">--</div>
-                <div class="wm-stat-label">平均ドロップ数</div>
+                <div class="wm-stat-label" data-i18n="wm_stat_mean">平均ドロップ数</div>
               </div>
               <div class="wm-stat-box">
                 <div class="wm-stat-value" id="wm-sim-median">--</div>
-                <div class="wm-stat-label">中央値</div>
+                <div class="wm-stat-label" data-i18n="wm_stat_median">中央値</div>
               </div>
               <div class="wm-stat-box">
                 <div class="wm-stat-value" id="wm-sim-p90">--</div>
-                <div class="wm-stat-label">90パーセンタイル</div>
-                <div class="wm-stat-sub">10回に9回はこの回数以内で到達</div>
+                <div class="wm-stat-label" data-i18n="wm_stat_p90">90パーセンタイル</div>
+                <div class="wm-stat-sub" data-i18n="wm_stat_p90_sub">10回に9回はこの回数以内で到達</div>
               </div>
             </div>
             <div id="wm-sim-percentiles" style="font-size:0.74rem;color:var(--parchment-dim);line-height:1.8;font-family:var(--font-mono)"></div>
           </div>
           <div class="wm-card">
-            <div class="wm-card-title">ドロップ数の分布</div>
+            <div class="wm-card-title" data-i18n="wm_sim_dist_title">ドロップ数の分布</div>
             <canvas id="wm-sim-chart" height="180"></canvas>
           </div>
         </div>
@@ -751,17 +757,17 @@
       <!-- Tab 3: Detail table -->
       <div id="wm-tab-table" class="wm-tab-panel">
         <div class="wm-card">
-          <div class="wm-card-title">WM 別確率詳細</div>
+          <div class="wm-card-title" data-i18n="wm_detail_title">WM 別確率詳細</div>
           <div class="wm-range-row">
-            <label>Watermark: <strong id="wm-t-wm-val">60</strong></label>
+            <label><span data-i18n="wm_lbl_watermark">Watermark:</span> <strong id="wm-t-wm-val">60</strong></label>
             <input type="range" id="wm-t-wm" min="21" max="80" value="60">
           </div>
           <table class="wm-prob-table">
             <thead>
               <tr>
-                <th style="text-align:left">ドロップ IL</th>
-                <th>オフセット</th>
-                <th style="text-align:left">確率</th>
+                <th style="text-align:left" data-i18n="wm_th_drop_il">ドロップ IL</th>
+                <th data-i18n="wm_th_offset">オフセット</th>
+                <th style="text-align:left" data-i18n="wm_th_prob">確率</th>
               </tr>
             </thead>
             <tbody id="wm-detail-body"></tbody>
@@ -769,7 +775,7 @@
         </div>
 
         <div class="wm-card">
-          <div class="wm-card-title">全 WM ヒートマップ (行: WM / 列: オフセット)</div>
+          <div class="wm-card-title" data-i18n="wm_heatmap_title">全 WM ヒートマップ (行: WM / 列: オフセット)</div>
           <div class="wm-table-wrap">
             <table class="wm-heat-table" id="wm-heat-table"></table>
           </div>
@@ -1071,6 +1077,74 @@
 (function () {
   const DATA = {"21":{"0":10.0,"1":81.0,"2":6.0,"3":3.0},"22":{"0":10.0,"1":81.0,"2":6.0,"3":3.0},"23":{"0":10.01,"1":80.99,"2":6.0,"3":3.0},"24":{"-1":0.01,"0":10.03,"1":80.96,"2":6.0,"3":3.0},"25":{"-1":0.02,"0":10.08,"1":80.91,"2":5.99,"3":3.0},"26":{"-2":0.01,"-1":0.03,"0":10.16,"1":80.82,"2":5.99,"3":2.99},"27":{"-2":0.01,"-1":0.06,"0":10.28,"1":80.68,"2":5.98,"3":2.99},"28":{"-3":0.01,"-2":0.01,"-1":0.1,"0":10.47,"1":80.47,"2":5.96,"3":2.98},"29":{"-3":0.01,"-2":0.03,"-1":0.14,"0":10.72,"1":80.19,"2":5.94,"3":2.97},"30":{"-3":0.02,"-2":0.03,"-1":0.21,"0":11.05,"1":79.82,"2":5.91,"3":2.96},"31":{"-3":0.02,"-2":0.05,"-1":0.3,"0":11.47,"1":79.34,"2":5.88,"3":2.94},"32":{"-3":0.03,"-2":0.07,"-1":0.4,"0":11.99,"1":78.76,"2":5.83,"3":2.92},"33":{"-3":0.04,"-2":0.09,"-1":0.53,"0":12.64,"1":78.03,"2":5.78,"3":2.89},"34":{"-3":0.06,"-2":0.11,"-1":0.68,"0":13.41,"1":77.17,"2":5.71,"3":2.86},"35":{"-3":0.07,"-2":0.15,"-1":0.86,"0":14.32,"1":76.14,"2":5.64,"3":2.82},"36":{"-3":0.09,"-2":0.18,"-1":1.08,"0":15.39,"1":74.93,"2":5.55,"3":2.78},"37":{"-3":0.11,"-2":0.22,"-1":1.33,"0":16.64,"1":73.53,"2":5.45,"3":2.72},"38":{"-3":0.13,"-2":0.27,"-1":1.62,"0":18.06,"1":71.93,"2":5.33,"3":2.66},"39":{"-3":0.16,"-2":0.32,"-1":1.94,"0":19.69,"1":70.1,"2":5.19,"3":2.6},"40":{"-3":0.19,"-2":0.39,"-1":2.3,"0":21.52,"1":68.04,"2":5.04,"3":2.52},"41":{"-3":0.23,"-2":0.45,"-1":2.72,"0":23.58,"1":65.72,"2":4.87,"3":2.43},"42":{"-3":0.26,"-2":0.53,"-1":3.18,"0":25.89,"1":63.13,"2":4.67,"3":2.34},"43":{"-3":0.31,"-2":0.61,"-1":3.69,"0":28.44,"1":60.25,"2":4.47,"3":2.23},"44":{"-3":0.35,"-2":0.71,"-1":4.26,"0":31.27,"1":57.07,"2":4.23,"3":2.11},"45":{"-3":0.41,"-2":0.81,"-1":4.88,"0":34.39,"1":53.56,"2":3.97,"3":1.98},"46":{"-3":0.46,"-2":0.93,"-1":5.56,"0":37.8,"1":49.72,"2":3.69,"3":1.84},"47":{"-3":0.53,"-2":1.05,"-1":6.3,"0":41.53,"1":45.53,"2":3.37,"3":1.69},"48":{"-3":0.59,"-2":1.19,"-1":7.12,"0":45.59,"1":40.96,"2":4.55},"49":{"-3":0.67,"-2":1.33,"-1":8.0,"0":50.0,"1":40.0},"50":{"-3":5.0,"-2":10.0,"-1":35.0,"0":50.0},"51":{"0":33.33,"1":66.67},"52":{"0":33.33,"1":66.67},"53":{"-2":0.01,"-1":0.01,"0":33.34,"1":66.64},"54":{"-2":0.01,"-1":0.04,"0":33.35,"1":66.6},"55":{"-3":0.01,"-2":0.02,"-1":0.1,"0":33.38,"1":66.49},"56":{"-3":0.02,"-2":0.04,"-1":0.19,"0":33.42,"1":66.33},"57":{"-3":0.04,"-2":0.07,"-1":0.33,"0":33.49,"1":66.07},"58":{"-3":0.06,"-2":0.12,"-1":0.52,"0":33.59,"1":65.71},"59":{"-3":0.09,"-2":0.17,"-1":0.78,"0":33.72,"1":65.24},"60":{"-3":0.12,"-2":0.25,"-1":1.11,"0":33.88,"1":64.64},"61":{"-3":0.17,"-2":0.34,"-1":1.53,"0":34.08,"1":63.88},"62":{"-3":0.23,"-2":0.45,"-1":2.03,"0":34.33,"1":62.96},"63":{"-3":0.29,"-2":0.59,"-1":2.64,"0":34.63,"1":61.85},"64":{"-3":0.37,"-2":0.75,"-1":3.36,"0":34.99,"1":60.53},"65":{"-3":0.47,"-2":0.93,"-1":4.2,"0":35.4,"1":59.0},"66":{"-3":0.57,"-2":1.15,"-1":5.17,"0":35.88,"1":57.23},"67":{"-3":0.7,"-2":1.39,"-1":6.27,"0":36.43,"1":55.21},"68":{"-3":0.84,"-2":1.67,"-1":7.53,"0":37.05,"1":52.91},"69":{"-3":0.99,"-2":1.99,"-1":8.94,"0":37.75,"1":50.33},"70":{"-3":1.17,"-2":2.34,"-1":10.51,"0":38.52,"1":47.46},"71":{"-3":1.36,"-2":2.73,"-1":12.27,"0":39.39,"1":44.25},"72":{"-3":1.58,"-2":3.16,"-1":14.21,"0":40.35,"1":40.7},"73":{"-3":1.82,"-2":3.63,"-1":16.34,"0":41.4,"1":36.81},"74":{"-3":2.08,"-2":4.15,"-1":18.68,"0":42.56,"1":32.53},"75":{"-3":2.36,"-2":4.72,"-1":21.23,"0":43.82,"1":27.87},"76":{"-3":2.67,"-2":5.33,"-1":24.0,"0":45.19,"1":22.81},"77":{"-3":3.0,"-2":6.0,"-1":27.01,"0":46.67,"1":17.32},"78":{"-3":3.36,"-2":6.73,"-1":30.25,"0":48.27,"1":11.39},"79":{"-3":3.75,"-2":7.5,"-1":33.75,"0":50.0,"1":5.0},"80":{"-3":7.0,"-2":14.0,"-1":49.0,"0":30.0}};
 
+  const WM_I18N = {
+    jp: {
+      wm_title: "強化計算",
+      wm_source: "データ出典: How to Level Up Gear by Aragon & Kninebeat (2026-07-04)",
+      wm_tab_calc: "計算", wm_tab_sim: "シミュレーション", wm_tab_table: "確率表",
+      wm_about_title: "ウォーターマーク (WM) とは?",
+      wm_about_hint: '<strong>Watermark</strong> = 武器 / 防具 / アクセサリー それぞれのカテゴリで<strong>これまでに入手した最高 IL</strong> を3つ平均した値 (端数切り捨て)。<br>次のドロップ IL はこの WM を基準に確率分布で決まります。<br>カテゴリ間の IL 差が大きいと全体 WM が頭打ちになるため、<strong>最も低いカテゴリを優先して強化する</strong>のが効率的です。',
+      wm_current_il_title: "現在の最高アイテムレベル",
+      wm_lbl_weapon: "武器 IL", wm_lbl_armor: "防具 IL", wm_lbl_acc: "アクセサリー IL",
+      wm_current_wm_title: "現在のウォーターマーク",
+      wm_next_prob_prefix: "次のドロップ確率 (WM", wm_next_prob_suffix: "基準)",
+      wm_th_drop_il: "ドロップ IL", wm_th_diff: "WMとの差", wm_th_prob: "確率", wm_th_cumulative: "累積確率", wm_th_offset: "オフセット",
+      wm_sim_settings_title: "シミュレーション設定",
+      wm_sim_note: "※ ドロップカテゴリ (武器 / 防具 / アクセサリー) は均等 1/3 確率で割り当てると仮定しています。実際のゲーム内確率と異なる場合があります。",
+      wm_lbl_weapon_now: "武器 現在 IL", wm_lbl_armor_now: "防具 現在 IL", wm_lbl_acc_now: "アクセサリー 現在 IL",
+      wm_lbl_target: "目標 Watermark:", wm_lbl_trials: "試行回数:", wm_lbl_watermark: "Watermark:",
+      wm_run_sim: "シミュレーション実行",
+      wm_calculating: "計算中... しばらくお待ちください",
+      wm_sim_result_title: "シミュレーション結果",
+      wm_stat_mean: "平均ドロップ数", wm_stat_median: "中央値", wm_stat_p90: "90パーセンタイル",
+      wm_stat_p90_sub: "10回に9回はこの回数以内で到達",
+      wm_sim_dist_title: "ドロップ数の分布",
+      wm_detail_title: "WM 別確率詳細",
+      wm_heatmap_title: "全 WM ヒートマップ (行: WM / 列: オフセット)",
+      cat_weapon: "武器", cat_armor: "防具", cat_acc: "アクセサリー",
+      priority_tag: "優先",
+      weak_hint_prefix: "最も低いカテゴリ: ",
+      weak_hint_suffix: " —— こちらを優先して強化しましょう。",
+      weak_hint_balanced: "全カテゴリが均等です。どれを強化しても効率は同じです。",
+      alert_already_met: "現在の WM はすでに目標以上です。",
+      pctile_75: "75%ile", pctile_90: "90%ile", pctile_95: "95%ile", pctile_max: "最大",
+    },
+    en: {
+      wm_title: "Enhancement Calculator",
+      wm_source: "Source: How to Level Up Gear by Aragon & Kninebeat (2026-07-04)",
+      wm_tab_calc: "Calculate", wm_tab_sim: "Simulation", wm_tab_table: "Probability Table",
+      wm_about_title: "What is Watermark (WM)?",
+      wm_about_hint: '<strong>Watermark</strong> = the average (rounded down) of the <strong>highest IL you\'ve ever obtained</strong> in each of the Weapon / Armor / Accessory categories.<br>Your next drop\'s IL is determined by a probability distribution centered on this WM.<br>A large IL gap between categories caps your overall WM, so it\'s most efficient to <strong>prioritize enhancing your lowest category</strong>.',
+      wm_current_il_title: "Current Highest Item Level",
+      wm_lbl_weapon: "Weapon IL", wm_lbl_armor: "Armor IL", wm_lbl_acc: "Accessory IL",
+      wm_current_wm_title: "Current Watermark",
+      wm_next_prob_prefix: "Next Drop Probability (WM", wm_next_prob_suffix: "base)",
+      wm_th_drop_il: "Drop IL", wm_th_diff: "Diff. from WM", wm_th_prob: "Probability", wm_th_cumulative: "Cumulative", wm_th_offset: "Offset",
+      wm_sim_settings_title: "Simulation Settings",
+      wm_sim_note: "* Assumes drop categories (Weapon / Armor / Accessory) are assigned with an equal 1/3 probability each. May differ from actual in-game rates.",
+      wm_lbl_weapon_now: "Weapon Current IL", wm_lbl_armor_now: "Armor Current IL", wm_lbl_acc_now: "Accessory Current IL",
+      wm_lbl_target: "Target Watermark:", wm_lbl_trials: "Trial Count:", wm_lbl_watermark: "Watermark:",
+      wm_run_sim: "Run Simulation",
+      wm_calculating: "Calculating... please wait",
+      wm_sim_result_title: "Simulation Results",
+      wm_stat_mean: "Mean Drops", wm_stat_median: "Median", wm_stat_p90: "90th Percentile",
+      wm_stat_p90_sub: "9 out of 10 times, reached within this many drops",
+      wm_sim_dist_title: "Drop Count Distribution",
+      wm_detail_title: "Probability Detail by WM",
+      wm_heatmap_title: "Full WM Heatmap (rows: WM / cols: Offset)",
+      cat_weapon: "Weapon", cat_armor: "Armor", cat_acc: "Accessory",
+      priority_tag: "Priority",
+      weak_hint_prefix: "Lowest category: ",
+      weak_hint_suffix: " — prioritize enhancing this one.",
+      weak_hint_balanced: "All categories are balanced. Enhancing any of them is equally efficient.",
+      alert_already_met: "Your current WM already meets or exceeds the target.",
+      pctile_75: "75th %ile", pctile_90: "90th %ile", pctile_95: "95th %ile", pctile_max: "Max",
+    }
+  };
+
+  const wmBrowserLang = (navigator.language || '').toLowerCase();
+  let wmLang = wmBrowserLang.startsWith('ja') ? 'jp' : 'en';
+
   function esc(v) {
     return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -1088,6 +1162,27 @@
     return off > 0 ? 'var(--green)' : off < 0 ? 'var(--ember)' : 'var(--parchment)';
   }
   function id(x) { return document.getElementById(x); }
+
+  function applyWmI18n() {
+    const T = WM_I18N[wmLang];
+    document.querySelectorAll('#widget-wm [data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (T[key] !== undefined) el.textContent = T[key];
+    });
+    document.querySelectorAll('#widget-wm [data-i18n-html]').forEach(el => {
+      const key = el.dataset.i18nHtml;
+      if (T[key] !== undefined) el.innerHTML = T[key];
+    });
+  }
+
+  window.wmSetLang = function (l) {
+    wmLang = l;
+    id('wm-btn-jp').classList.toggle('active', l === 'jp');
+    id('wm-btn-en').classList.toggle('active', l === 'en');
+    applyWmI18n();
+    calcWatermark();
+    updateDetailTable();
+  };
 
   // ── Persistence ──────────────────────────────────────────────
   const STORE_KEY = 'solisium-wm-state-v1';
@@ -1141,10 +1236,11 @@
     id('wm-prob-wm-label').textContent = wm;
     id('wm-calc-result').style.display = 'block';
 
+    const T = WM_I18N[wmLang];
     const cats = [
-      { name: '武器',       val: w  },
-      { name: '防具',       val: a  },
-      { name: 'アクセサリー', val: ac },
+      { name: T.cat_weapon, val: w  },
+      { name: T.cat_armor,  val: a  },
+      { name: T.cat_acc,    val: ac },
     ];
     const minIL = Math.min(w, a, ac);
     const breakdown = id('wm-breakdown');
@@ -1163,7 +1259,7 @@
       row.appendChild(valEl);
       if (c.val === minIL) {
         const tag = document.createElement('span');
-        tag.textContent = '優先';
+        tag.textContent = T.priority_tag;
         tag.style.cssText = 'display:inline-block;background:rgba(201,161,92,.18);border:1px solid rgba(201,161,92,.5);color:var(--brass-bright);border-radius:4px;padding:1px 7px;font-size:.68rem;font-weight:600;margin-left:4px';
         row.appendChild(tag);
       }
@@ -1176,11 +1272,11 @@
     if (weakCats.length < 3) {
       const strong = document.createElement('strong');
       strong.textContent = weakCats.join(' / ') + ' (IL ' + minIL + ')';
-      hintEl.appendChild(document.createTextNode('最も低いカテゴリ: '));
+      hintEl.appendChild(document.createTextNode(T.weak_hint_prefix));
       hintEl.appendChild(strong);
-      hintEl.appendChild(document.createTextNode(' —— こちらを優先して強化しましょう。'));
+      hintEl.appendChild(document.createTextNode(T.weak_hint_suffix));
     } else {
-      hintEl.textContent = '全カテゴリが均等です。どれを強化しても効率は同じです。';
+      hintEl.textContent = T.weak_hint_balanced;
     }
 
     renderProbTable(wm, 'wm-calc-prob-body', true);
@@ -1266,7 +1362,7 @@
     const trials = parseInt(id('wm-s-trials').value, 10);
 
     if (wmOf(w0, a0, ac0) >= target) {
-      alert('現在の WM はすでに目標以上です。');
+      alert(WM_I18N[wmLang].alert_already_met);
       return;
     }
 
@@ -1306,10 +1402,11 @@
       id('wm-sim-median').textContent = median;
       id('wm-sim-p90').textContent    = p90;
 
+      const pT = WM_I18N[wmLang];
       const pEl = id('wm-sim-percentiles');
       pEl.textContent = '';
       [
-        ['75%ile', p75], ['90%ile', p90], ['95%ile', p95], ['最大', results[n - 1]],
+        [pT.pctile_75, p75], [pT.pctile_90, p90], [pT.pctile_95, p95], [pT.pctile_max, results[n - 1]],
       ].forEach(([label, val], i) => {
         if (i > 0) pEl.appendChild(document.createTextNode('   '));
         pEl.appendChild(document.createTextNode(label + ': '));
@@ -1490,6 +1587,9 @@
 
   // ── Init ──────────────────────────────────────────────────────
   loadState();
+  id('wm-btn-jp').classList.toggle('active', wmLang === 'jp');
+  id('wm-btn-en').classList.toggle('active', wmLang === 'en');
+  applyWmI18n();
   id('wm-s-target-val').textContent = id('wm-s-target').value;
   id('wm-s-trials-val').textContent = Number(id('wm-s-trials').value).toLocaleString();
   calcWatermark();
