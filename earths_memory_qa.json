@@ -285,5 +285,6 @@
   {"id":284,"answer":"FALSE","text_en":"The thing on Emperfang's head is a crown made by orcs.","text_ja":"エンペルファングの頭の上にあるものはオークが作った王冠である。","category":"Story / General"},
   {"id":285,"answer":"FALSE","text_en":"The name of the Diston who relays information in front of the Milestone Stele is Lunar Crier.","text_ja":"道標の石碑の前で情報を伝えるディストンの名前はルナー・クライヤーである。","category":"Venelux"},
   {"id":286,"answer":"FALSE","text_en":"All Storage Managers are dwarves.","text_ja":"保管管理人は全員ドワーフである。","category":"Story / General"},
-  {"id":287,"answer":"FALSE","text_en":"There is a pet cat next to Wilson, the Herbalist at Windhill Shores.","text_ja":"ウィンドヒルの浜の薬草師ウィルソンの傍らにはペットの猫がいる。","category":"Story / General"}
+  {"id":287,"answer":"FALSE","text_en":"There is a pet cat next to Wilson, the Herbalist at Windhill Shores.","text_ja":"ウィンドヒルの浜の薬草師ウィルソンの傍らにはペットの猫がいる。","category":"Story / General"},
+  {"id":288,"answer":"FALSE","text_en":"Roen only uses crossbows.","text_ja":"ロエンはクロスボウしか使わない。","category":"Laslan"}
 ]
