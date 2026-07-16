@@ -538,6 +538,52 @@
 
   .wm-bar-cell { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
   .wm-mini-bar { height: 6px; border-radius: 3px; opacity: 0.75; flex-shrink: 0; }
+
+  /* ══════════════════ WEATHER MINI (compact, inside Daynight widget) ══════════════════ */
+  .dn-weather-mini {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .dn-weather-mini-top {
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 14px;
+    border-top: none;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dn-weather-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    padding: 4px 0;
+  }
+  .dn-weather-icon { font-size: 1rem; line-height: 1; }
+  .dn-weather-zone {
+    color: var(--parchment-dim);
+    white-space: nowrap;
+  }
+  .dn-weather-status {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    color: var(--parchment);
+    font-weight: 600;
+    font-size: 0.74rem;
+    text-align: right;
+  }
+  .dn-weather-status .dn-weather-num { color: var(--brass-bright); }
+  .dn-weather-row.is-raining .dn-weather-status .dn-weather-num { color: var(--indigo-bright); }
+  .dn-weather-more {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.7rem;
+    color: var(--brass);
+    text-decoration: none;
+    opacity: 0.8;
+  }
+  .dn-weather-more:hover { opacity: 1; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -551,6 +597,7 @@
   </div>
   <nav class="site-tabbar" aria-label="ページ切替">
     <a href="index.html" class="site-tab active"><span class="site-tab-icon">🌗</span><span data-site-i18n="tab_daynight">暦 & 強化計算</span></a>
+    <a href="rain.html" class="site-tab"><span class="site-tab-icon">🌧️</span><span data-site-i18n="tab_rain">天候</span></a>
     <a href="qa.html" class="site-tab"><span class="site-tab-icon">📜</span><span data-site-i18n="tab_qa">記憶の書庫</span></a>
   </nav>
 </header>
@@ -573,6 +620,20 @@
             <button class="dn-btn" id="dn-btn-en" onclick="dnSetLang('en')">EN</button>
           </div>
         </div>
+      </div>
+
+      <div class="dn-weather-mini dn-weather-mini-top">
+        <div class="dn-weather-row" id="dn-weather-row-default">
+          <span class="dn-weather-icon" id="dn-weather-icon-default">☀️</span>
+          <span class="dn-weather-zone">ラスラン&amp;ストーンガルド</span>
+          <span class="dn-weather-status" id="dn-weather-status-default">--</span>
+        </div>
+        <div class="dn-weather-row" id="dn-weather-row-talandre">
+          <span class="dn-weather-icon" id="dn-weather-icon-talandre">☀️</span>
+          <span class="dn-weather-zone">トランドール</span>
+          <span class="dn-weather-status" id="dn-weather-status-talandre">--</span>
+        </div>
+        <a href="rain.html" class="dn-weather-more" id="dn-weather-more">天候の詳細 →</a>
       </div>
 
       <div class="dn-sky" id="dn-sky">
@@ -797,6 +858,7 @@
     jp: {
       brand_eyebrow: "ソリシウム — Throne and Liberty",
       tab_daynight: "暦 & 強化計算",
+      tab_rain: "天候",
       tab_qa: "記憶の書庫",
       hub_intro: "Throne and Liberty 非公式攻略ツール集。ゲーム内の昼夜サイクルとギア強化(Watermark)ドロップ確率を、ひとつの画面でまとめて確認できます。",
       footer: "Solisium Compendium — Throne and Liberty 非公式攻略ツール集",
@@ -804,6 +866,7 @@
     en: {
       brand_eyebrow: "Solisium — Throne and Liberty",
       tab_daynight: "Almanac & Calculator",
+      tab_rain: "Weather",
       tab_qa: "Memory Archive",
       hub_intro: "An unofficial Throne and Liberty toolkit. Check the game's day/night cycle and gear-enhancement (Watermark) drop odds together on one screen.",
       footer: "Solisium Compendium — Unofficial Throne and Liberty Toolkit",
@@ -1629,6 +1692,83 @@
   id('wm-s-trials-val').textContent = Number(id('wm-s-trials').value).toLocaleString();
   calcWatermark();
   updateDetailTable();
+})();
+
+/* =====================================================================
+   WEATHER MINI (compact, attached to Daynight widget)
+   Same schedule data as rain.html, but only renders current status —
+   full strip/upcoming list lives on the dedicated Weather page.
+   ===================================================================== */
+(function () {
+  const RAIN_ANCHOR_AS = new Date("2024-09-30T02:45:00.000Z").getTime();
+  const RAIN_SCHEDULES = {default:[{type:"normal",start:0,end:18e5},{type:"rain",start:18e5,end:27e5},{type:"normal",start:27e5,end:36e5},{type:"rain",start:36e5,end:45e5},{type:"normal",start:45e5,end:72e5},{type:"rain",start:72e5,end:81e5},{type:"normal",start:81e5,end:108e5},{type:"rain",start:108e5,end:117e5},{type:"normal",start:117e5,end:162e5},{type:"rain",start:162e5,end:171e5},{type:"normal",start:171e5,end:216e5},{type:"rain",start:216e5,end:225e5},{type:"normal",start:225e5,end:234e5},{type:"rain",start:234e5,end:243e5},{type:"normal",start:243e5,end:252e5},{type:"rain",start:252e5,end:261e5},{type:"normal",start:261e5,end:306e5},{type:"rain",start:306e5,end:315e5},{type:"normal",start:315e5,end:342e5},{type:"rain",start:342e5,end:351e5},{type:"normal",start:351e5,end:36e6},{type:"rain",start:36e6,end:369e5},{type:"normal",start:369e5,end:396e5},{type:"rain",start:396e5,end:405e5},{type:"normal",start:405e5,end:414e5},{type:"rain",start:414e5,end:423e5},{type:"normal",start:423e5,end:468e5},{type:"rain",start:468e5,end:477e5},{type:"normal",start:477e5,end:486e5},{type:"rain",start:486e5,end:495e5},{type:"normal",start:495e5,end:522e5},{type:"rain",start:522e5,end:531e5},{type:"normal",start:531e5,end:558e5},{type:"rain",start:558e5,end:567e5},{type:"normal",start:567e5,end:576e5},{type:"rain",start:576e5,end:585e5},{type:"normal",start:585e5,end:594e5},{type:"rain",start:594e5,end:603e5},{type:"normal",start:603e5,end:666e5},{type:"rain",start:666e5,end:675e5},{type:"normal",start:675e5,end:702e5},{type:"rain",start:702e5,end:711e5},{type:"normal",start:711e5,end:774e5},{type:"rain",start:774e5,end:783e5},{type:"normal",start:783e5,end:81e6},{type:"rain",start:81e6,end:819e5},{type:"normal",start:819e5,end:828e5},{type:"rain",start:828e5,end:837e5},{type:"normal",start:837e5,end:9e7},{type:"rain",start:9e7,end:909e5},{type:"normal",start:909e5,end:954e5},{type:"rain",start:954e5,end:963e5},{type:"normal",start:963e5,end:99e6},{type:"rain",start:99e6,end:999e5},{type:"normal",start:999e5,end:1026e5},{type:"rain",start:1026e5,end:1035e5},{type:"normal",start:1035e5,end:1116e5},{type:"rain",start:1116e5,end:1125e5},{type:"normal",start:1125e5,end:1134e5},{type:"rain",start:1134e5,end:1143e5},{type:"normal",start:1143e5,end:1152e5},{type:"rain",start:1152e5,end:1161e5},{type:"normal",start:1161e5,end:1314e5},{type:"rain",start:1314e5,end:1323e5},{type:"normal",start:1323e5,end:135e6},{type:"rain",start:135e6,end:1359e5},{type:"normal",start:1359e5,end:1368e5},{type:"rain",start:1368e5,end:1377e5},{type:"normal",start:1377e5,end:1422e5},{type:"rain",start:1422e5,end:1431e5},{type:"normal",start:1431e5,end:1566e5},{type:"rain",start:1566e5,end:1575e5},{type:"normal",start:1575e5,end:1584e5},{type:"rain",start:1584e5,end:1593e5},{type:"normal",start:1593e5,end:1674e5},{type:"rain",start:1674e5,end:1683e5},{type:"normal",start:1683e5,end:1692e5},{type:"rain",start:1692e5,end:1701e5},{type:"normal",start:1701e5,end:1728e5},{type:"rain",start:1728e5,end:1737e5},{type:"normal",start:1737e5,end:18e7},{type:"rain",start:18e7,end:1809e5},{type:"normal",start:1809e5,end:1818e5},{type:"rain",start:1818e5,end:1827e5},{type:"normal",start:1827e5,end:1854e5},{type:"rain",start:1854e5,end:1863e5},{type:"normal",start:1863e5,end:198e6},{type:"rain",start:198e6,end:1989e5},{type:"normal",start:1989e5,end:1998e5},{type:"rain",start:1998e5,end:2007e5},{type:"normal",start:2007e5,end:2106e5},{type:"rain",start:2106e5,end:2115e5},{type:"normal",start:2115e5,end:2178e5},{type:"rain",start:2178e5,end:2187e5},{type:"normal",start:2187e5,end:2214e5},{type:"rain",start:2214e5,end:2223e5},{type:"normal",start:2223e5,end:2232e5},{type:"rain",start:2232e5,end:2241e5},{type:"normal",start:2241e5,end:2286e5},{type:"rain",start:2286e5,end:2295e5},{type:"normal",start:2295e5,end:2304e5},{type:"rain",start:2304e5,end:2313e5},{type:"normal",start:2313e5,end:2322e5},{type:"rain",start:2322e5,end:2331e5},{type:"normal",start:2331e5,end:2358e5},{type:"rain",start:2358e5,end:2367e5},{type:"normal",start:2367e5,end:2394e5},{type:"rain",start:2394e5,end:2403e5},{type:"normal",start:2403e5,end:2412e5},{type:"rain",start:2412e5,end:2421e5},{type:"normal",start:2421e5,end:2448e5},{type:"rain",start:2448e5,end:2457e5},{type:"normal",start:2457e5,end:2502e5},{type:"rain",start:2502e5,end:2511e5},{type:"normal",start:2511e5,end:2556e5},{type:"rain",start:2556e5,end:2565e5},{type:"normal",start:2565e5,end:261e6},{type:"rain",start:261e6,end:2619e5},{type:"normal",start:2619e5,end:2664e5},{type:"rain",start:2664e5,end:2673e5},{type:"normal",start:2673e5,end:27e7}],talandre:[{type:"normal",start:0,end:54e5},{type:"rain",start:54e5,end:63e5},{type:"normal",start:63e5,end:234e5},{type:"rain",start:234e5,end:243e5},{type:"normal",start:243e5,end:45e6},{type:"rain",start:45e6,end:459e5},{type:"normal",start:459e5,end:612e5},{type:"rain",start:612e5,end:621e5},{type:"normal",start:621e5,end:63e6},{type:"rain",start:63e6,end:639e5},{type:"normal",start:639e5,end:702e5},{type:"rain",start:702e5,end:711e5},{type:"normal",start:711e5,end:792e5},{type:"rain",start:792e5,end:801e5},{type:"normal",start:801e5,end:954e5},{type:"rain",start:954e5,end:963e5},{type:"normal",start:963e5,end:99e6},{type:"rain",start:99e6,end:999e5},{type:"normal",start:999e5,end:1332e5},{type:"rain",start:1332e5,end:1341e5},{type:"normal",start:1341e5,end:1674e5},{type:"rain",start:1674e5,end:1683e5},{type:"normal",start:1683e5,end:1746e5},{type:"rain",start:1746e5,end:1755e5},{type:"normal",start:1755e5,end:1782e5},{type:"rain",start:1782e5,end:1791e5},{type:"normal",start:1791e5,end:1818e5},{type:"rain",start:1818e5,end:1827e5},{type:"normal",start:1827e5,end:1944e5},{type:"rain",start:1944e5,end:1953e5},{type:"normal",start:1953e5,end:2214e5},{type:"rain",start:2214e5,end:2223e5},{type:"normal",start:2223e5,end:243e6},{type:"rain",start:243e6,end:2439e5},{type:"normal",start:2439e5,end:2484e5},{type:"rain",start:2484e5,end:2493e5},{type:"normal",start:2493e5,end:2538e5},{type:"rain",start:2538e5,end:2547e5},{type:"normal",start:2547e5,end:2556e5},{type:"rain",start:2556e5,end:2565e5},{type:"normal",start:2565e5,end:2646e5},{type:"rain",start:2646e5,end:2655e5},{type:"normal",start:2655e5,end:27e7}]};
+
+  const WEATHER_MINI_I18N = {
+    jp: { raining: "やむまで", clear: "次の雨", more: "天候の詳細 →" },
+    en: { raining: "Clears in", clear: "Next rain", more: "Full weather →" }
+  };
+  const weatherBrowserLang = (navigator.language || '').toLowerCase();
+  const weatherLang = weatherBrowserLang.startsWith('ja') ? 'jp' : 'en';
+  const WT = WEATHER_MINI_I18N[weatherLang];
+
+  function pad2(n) { return String(Math.floor(n)).padStart(2, '0'); }
+
+  function expandSchedule(schedule, anchor, now, windowMs) {
+    const cycleLen = schedule[schedule.length - 1].end;
+    const windowEnd = now + windowMs;
+    const cycleIndex = Math.floor((now - anchor) / cycleLen);
+    const cyclesNeeded = Math.ceil((windowEnd - anchor) / cycleLen) - cycleIndex;
+    const segments = [];
+    for (let i = 0; i < cyclesNeeded; i++) {
+      const cycleStart = anchor + (cycleIndex + i) * cycleLen;
+      for (const seg of schedule) {
+        const segStart = cycleStart + seg.start;
+        const segEnd = cycleStart + seg.end;
+        if (segEnd >= now && segStart <= windowEnd) {
+          segments.push({ start: segStart, end: segEnd, type: seg.type });
+        }
+      }
+    }
+    return segments;
+  }
+
+  function fmtDuration(ms) {
+    const totalSec = Math.max(0, Math.round(ms / 1000));
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${m}:${pad2(s)}`;
+  }
+
+  function renderMini(key, schedule) {
+    const now = Date.now();
+    const rainEvents = expandSchedule(schedule, RAIN_ANCHOR_AS, now, 24 * 3600 * 1000)
+      .filter(e => e.type === 'rain')
+      .sort((a, b) => a.start - b.start);
+    const current = rainEvents.find(e => e.start <= now && e.end > now);
+    const next = current || rainEvents.find(e => e.start > now);
+
+    const iconEl = document.getElementById(`dn-weather-icon-${key}`);
+    const statusEl = document.getElementById(`dn-weather-status-${key}`);
+    const rowEl = document.getElementById(`dn-weather-row-${key}`);
+    if (!next) { iconEl.textContent = '☀️'; statusEl.textContent = '--'; return; }
+
+    const isRaining = !!current;
+    rowEl.classList.toggle('is-raining', isRaining);
+    iconEl.textContent = isRaining ? '🌧️' : '☀️';
+    const label = isRaining ? WT.raining : WT.clear;
+    const target = isRaining ? current.end : next.start;
+    statusEl.innerHTML = `${label} <span class="dn-weather-num">${fmtDuration(target - now)}</span>`;
+  }
+
+  function renderAllMini() {
+    renderMini('default', RAIN_SCHEDULES.default);
+    renderMini('talandre', RAIN_SCHEDULES.talandre);
+  }
+
+  document.getElementById('dn-weather-more').textContent = WT.more;
+  renderAllMini();
+  setInterval(renderAllMini, 1000);
 })();
 </script>
 </body>

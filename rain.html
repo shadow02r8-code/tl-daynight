@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天候予報 — Solisium Compendium</title>
+<meta name="description" content="Throne and Liberty アジアリージョンの雨予報 — ラスラン&ストーンガルド / トランドールの雨サイクルをリアルタイム表示">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png?v=2">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void:        #0a0d14;
+    --void-2:      #11151f;
+    --void-3:      #161c28;
+    --brass:       #c9a15c;
+    --brass-bright:#f0cf8e;
+    --brass-dim:   #7a6238;
+    --indigo:      #7c6ce8;
+    --indigo-bright:#ab9dff;
+    --parchment:   #ece1c6;
+    --parchment-dim:#a89f86;
+    --ember:       #ff4f3f;
+    --green:       #6bc98a;
+    --line:        rgba(201,161,92,0.18);
+    --line-soft:   rgba(201,161,92,0.09);
+
+    --font-display: 'Cinzel', 'Times New Roman', serif;
+    --font-body:    'Crimson Pro', Georgia, serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { color-scheme: dark; }
+  body {
+    font-family: var(--font-body);
+    background: var(--void);
+    color: var(--parchment);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(124,108,232,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 400px at 100% 100%, rgba(201,161,92,0.06), transparent 60%);
+  }
+  a, button, input { font-family: inherit; }
+
+  /* ══════════════════ SITE CHROME (shared with index.html / qa.html) ══════════════════ */
+  .site-header { position: relative; }
+  .site-header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 18px 14px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .site-brand { text-decoration: none; display: block; }
+  .site-brand-eyebrow {
+    display: block;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.72rem;
+    color: var(--brass);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .site-brand-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    color: var(--parchment);
+    text-transform: uppercase;
+    line-height: 1.15;
+  }
+  .site-brand-title .amp { color: var(--brass); }
+
+  .site-tabbar {
+    display: flex;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 18px;
+    gap: 6px;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .site-tabbar::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--brass), transparent 70%);
+  }
+  .site-tab {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 22px;
+    text-decoration: none;
+    color: var(--parchment-dim);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.18s;
+  }
+  .site-tab-icon {
+    font-size: 1.15rem;
+    line-height: 1;
+    filter: grayscale(0.6) opacity(0.7);
+    transition: filter 0.18s;
+  }
+  .site-tab:hover { color: var(--parchment); background: rgba(201,161,92,0.05); }
+  .site-tab.active {
+    color: var(--brass-bright);
+    border-bottom-color: var(--brass);
+    background: linear-gradient(180deg, rgba(201,161,92,0.10), transparent);
+  }
+  .site-tab.active .site-tab-icon { filter: none; }
+  @media (max-width: 480px) {
+    .site-tab { padding: 12px 14px; font-size: 0.74rem; }
+  }
+
+  .site-footer {
+    text-align: center;
+    font-size: 0.68rem;
+    font-style: italic;
+    color: var(--parchment-dim);
+    opacity: 0.6;
+    padding: 30px 18px 40px;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 14px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--line), transparent);
+  }
+  .section-label .sub-jp {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--parchment-dim);
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.72rem;
+  }
+
+  /* ══════════════════ RAIN PAGE ══════════════════ */
+  .rain-main { max-width: 1180px; margin: 0 auto; padding: 26px 18px 10px; }
+  .rain-intro {
+    font-size: 0.82rem;
+    color: var(--parchment-dim);
+    margin-bottom: 22px;
+    line-height: 1.8;
+  }
+
+  .rain-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .rain-grid { grid-template-columns: 1fr; }
+  }
+
+  .rain-panel {
+    position: relative;
+    background: radial-gradient(ellipse at 50% 0%, var(--void-3), var(--void-2) 70%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 20px 18px;
+    overflow: hidden;
+  }
+  .rain-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 8%; right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--indigo) 50%, transparent);
+    opacity: 0.5;
+  }
+
+  .rain-panel-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    color: var(--parchment);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .rain-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .rain-status-icon { font-size: 1.4rem; line-height: 1; }
+  .rain-status-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--parchment);
+  }
+  .rain-status-text .rain-countdown-num {
+    font-family: var(--font-mono);
+    color: var(--brass-bright);
+    font-weight: 700;
+  }
+  .rain-panel.is-raining .rain-status-text .rain-countdown-num { color: var(--indigo-bright); }
+
+  .rain-events-label {
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--parchment-dim);
+    margin-bottom: 8px;
+  }
+  .rain-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .rain-event-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 4px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 0.8rem;
+  }
+  .rain-event-row:last-child { border-bottom: none; }
+  .rain-event-row .rain-drop-icon { color: var(--indigo-bright); font-size: 0.95rem; }
+  .rain-event-time {
+    font-family: var(--font-mono);
+    color: var(--parchment);
+    font-weight: 600;
+  }
+  .rain-event-rel {
+    color: var(--parchment-dim);
+    font-size: 0.72rem;
+    margin-left: auto;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="index.html" class="site-brand">
+      <span class="site-brand-eyebrow" data-site-i18n="brand_eyebrow">ソリシウム — Throne and Liberty</span>
+      <span class="site-brand-title">SOLISIUM <span class="amp">/</span> COMPENDIUM</span>
+    </a>
+  </div>
+  <nav class="site-tabbar" aria-label="ページ切替">
+    <a href="index.html" class="site-tab"><span class="site-tab-icon">🌗</span><span data-site-i18n="tab_daynight">暦 & 強化計算</span></a>
+    <a href="rain.html" class="site-tab active"><span class="site-tab-icon">🌧️</span><span data-site-i18n="tab_rain">天候</span></a>
+    <a href="qa.html" class="site-tab"><span class="site-tab-icon">📜</span><span data-site-i18n="tab_qa">記憶の書庫</span></a>
+  </nav>
+</header>
+
+<main class="rain-main">
+  <div class="section-label"><span id="rain-section-label">天候</span><span class="sub-jp">Rain Schedule (Asia)</span></div>
+  <p class="rain-intro" id="rain-intro">アジアリージョンの雨サイクルをリアルタイム表示。ラスラン&ストーンガルドとトランドールでは雨のパターンが異なります。</p>
+
+  <div class="rain-grid">
+    <div class="rain-panel" id="rain-panel-default">
+      <div class="rain-panel-title">ラスラン&ストーンガルド</div>
+      <div class="rain-status-row">
+        <span class="rain-status-icon" id="rain-icon-default">☀️</span>
+        <span class="rain-status-text" id="rain-status-default">--</span>
+      </div>
+      <div class="rain-events-label" id="rain-events-label-default">今後の雨予定</div>
+      <div class="rain-events-list" id="rain-events-default"></div>
+    </div>
+    <div class="rain-panel" id="rain-panel-talandre">
+      <div class="rain-panel-title">トランドール</div>
+      <div class="rain-status-row">
+        <span class="rain-status-icon" id="rain-icon-talandre">☀️</span>
+        <span class="rain-status-text" id="rain-status-talandre">--</span>
+      </div>
+      <div class="rain-events-label" id="rain-events-label-talandre">今後の雨予定</div>
+      <div class="rain-events-list" id="rain-events-talandre"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" data-site-i18n="footer">Solisium Compendium — Throne and Liberty 非公式攻略ツール集</footer>
+
+<script>
+/* =====================================================================
+   SITE CHROME (brand / tab nav) — localized once on load
+   ===================================================================== */
+(function () {
+  const SITE_I18N = {
+    jp: {
+      brand_eyebrow: "ソリシウム — Throne and Liberty",
+      tab_daynight: "暦 & 強化計算",
+      tab_rain: "天候",
+      tab_qa: "記憶の書庫",
+      footer: "Solisium Compendium — Throne and Liberty 非公式攻略ツール集",
+    },
+    en: {
+      brand_eyebrow: "Solisium — Throne and Liberty",
+      tab_daynight: "Almanac & Calculator",
+      tab_rain: "Weather",
+      tab_qa: "Memory Archive",
+      footer: "Solisium Compendium — Unofficial Throne and Liberty Toolkit",
+    }
+  };
+  const browserLang = (navigator.language || '').toLowerCase();
+  const lang = browserLang.startsWith('ja') ? 'jp' : 'en';
+  const T = SITE_I18N[lang];
+  document.querySelectorAll('[data-site-i18n]').forEach(el => {
+    const key = el.dataset.siteI18n;
+    if (T[key] !== undefined) el.textContent = T[key];
+  });
+})();
+
+/* =====================================================================
+   RAIN SCHEDULE (Asia region)
+   Schedule data + anchor timestamps sourced from questlog.gg's public
+   client bundle (deterministic 75h repeating cycle, no live API).
+   ===================================================================== */
+(function () {
+  const RAIN_ANCHOR_AS = new Date("2024-09-30T02:45:00.000Z").getTime();
+  const RAIN_SCHEDULES = {default:[{type:"normal",start:0,end:18e5},{type:"rain",start:18e5,end:27e5},{type:"normal",start:27e5,end:36e5},{type:"rain",start:36e5,end:45e5},{type:"normal",start:45e5,end:72e5},{type:"rain",start:72e5,end:81e5},{type:"normal",start:81e5,end:108e5},{type:"rain",start:108e5,end:117e5},{type:"normal",start:117e5,end:162e5},{type:"rain",start:162e5,end:171e5},{type:"normal",start:171e5,end:216e5},{type:"rain",start:216e5,end:225e5},{type:"normal",start:225e5,end:234e5},{type:"rain",start:234e5,end:243e5},{type:"normal",start:243e5,end:252e5},{type:"rain",start:252e5,end:261e5},{type:"normal",start:261e5,end:306e5},{type:"rain",start:306e5,end:315e5},{type:"normal",start:315e5,end:342e5},{type:"rain",start:342e5,end:351e5},{type:"normal",start:351e5,end:36e6},{type:"rain",start:36e6,end:369e5},{type:"normal",start:369e5,end:396e5},{type:"rain",start:396e5,end:405e5},{type:"normal",start:405e5,end:414e5},{type:"rain",start:414e5,end:423e5},{type:"normal",start:423e5,end:468e5},{type:"rain",start:468e5,end:477e5},{type:"normal",start:477e5,end:486e5},{type:"rain",start:486e5,end:495e5},{type:"normal",start:495e5,end:522e5},{type:"rain",start:522e5,end:531e5},{type:"normal",start:531e5,end:558e5},{type:"rain",start:558e5,end:567e5},{type:"normal",start:567e5,end:576e5},{type:"rain",start:576e5,end:585e5},{type:"normal",start:585e5,end:594e5},{type:"rain",start:594e5,end:603e5},{type:"normal",start:603e5,end:666e5},{type:"rain",start:666e5,end:675e5},{type:"normal",start:675e5,end:702e5},{type:"rain",start:702e5,end:711e5},{type:"normal",start:711e5,end:774e5},{type:"rain",start:774e5,end:783e5},{type:"normal",start:783e5,end:81e6},{type:"rain",start:81e6,end:819e5},{type:"normal",start:819e5,end:828e5},{type:"rain",start:828e5,end:837e5},{type:"normal",start:837e5,end:9e7},{type:"rain",start:9e7,end:909e5},{type:"normal",start:909e5,end:954e5},{type:"rain",start:954e5,end:963e5},{type:"normal",start:963e5,end:99e6},{type:"rain",start:99e6,end:999e5},{type:"normal",start:999e5,end:1026e5},{type:"rain",start:1026e5,end:1035e5},{type:"normal",start:1035e5,end:1116e5},{type:"rain",start:1116e5,end:1125e5},{type:"normal",start:1125e5,end:1134e5},{type:"rain",start:1134e5,end:1143e5},{type:"normal",start:1143e5,end:1152e5},{type:"rain",start:1152e5,end:1161e5},{type:"normal",start:1161e5,end:1314e5},{type:"rain",start:1314e5,end:1323e5},{type:"normal",start:1323e5,end:135e6},{type:"rain",start:135e6,end:1359e5},{type:"normal",start:1359e5,end:1368e5},{type:"rain",start:1368e5,end:1377e5},{type:"normal",start:1377e5,end:1422e5},{type:"rain",start:1422e5,end:1431e5},{type:"normal",start:1431e5,end:1566e5},{type:"rain",start:1566e5,end:1575e5},{type:"normal",start:1575e5,end:1584e5},{type:"rain",start:1584e5,end:1593e5},{type:"normal",start:1593e5,end:1674e5},{type:"rain",start:1674e5,end:1683e5},{type:"normal",start:1683e5,end:1692e5},{type:"rain",start:1692e5,end:1701e5},{type:"normal",start:1701e5,end:1728e5},{type:"rain",start:1728e5,end:1737e5},{type:"normal",start:1737e5,end:18e7},{type:"rain",start:18e7,end:1809e5},{type:"normal",start:1809e5,end:1818e5},{type:"rain",start:1818e5,end:1827e5},{type:"normal",start:1827e5,end:1854e5},{type:"rain",start:1854e5,end:1863e5},{type:"normal",start:1863e5,end:198e6},{type:"rain",start:198e6,end:1989e5},{type:"normal",start:1989e5,end:1998e5},{type:"rain",start:1998e5,end:2007e5},{type:"normal",start:2007e5,end:2106e5},{type:"rain",start:2106e5,end:2115e5},{type:"normal",start:2115e5,end:2178e5},{type:"rain",start:2178e5,end:2187e5},{type:"normal",start:2187e5,end:2214e5},{type:"rain",start:2214e5,end:2223e5},{type:"normal",start:2223e5,end:2232e5},{type:"rain",start:2232e5,end:2241e5},{type:"normal",start:2241e5,end:2286e5},{type:"rain",start:2286e5,end:2295e5},{type:"normal",start:2295e5,end:2304e5},{type:"rain",start:2304e5,end:2313e5},{type:"normal",start:2313e5,end:2322e5},{type:"rain",start:2322e5,end:2331e5},{type:"normal",start:2331e5,end:2358e5},{type:"rain",start:2358e5,end:2367e5},{type:"normal",start:2367e5,end:2394e5},{type:"rain",start:2394e5,end:2403e5},{type:"normal",start:2403e5,end:2412e5},{type:"rain",start:2412e5,end:2421e5},{type:"normal",start:2421e5,end:2448e5},{type:"rain",start:2448e5,end:2457e5},{type:"normal",start:2457e5,end:2502e5},{type:"rain",start:2502e5,end:2511e5},{type:"normal",start:2511e5,end:2556e5},{type:"rain",start:2556e5,end:2565e5},{type:"normal",start:2565e5,end:261e6},{type:"rain",start:261e6,end:2619e5},{type:"normal",start:2619e5,end:2664e5},{type:"rain",start:2664e5,end:2673e5},{type:"normal",start:2673e5,end:27e7}],talandre:[{type:"normal",start:0,end:54e5},{type:"rain",start:54e5,end:63e5},{type:"normal",start:63e5,end:234e5},{type:"rain",start:234e5,end:243e5},{type:"normal",start:243e5,end:45e6},{type:"rain",start:45e6,end:459e5},{type:"normal",start:459e5,end:612e5},{type:"rain",start:612e5,end:621e5},{type:"normal",start:621e5,end:63e6},{type:"rain",start:63e6,end:639e5},{type:"normal",start:639e5,end:702e5},{type:"rain",start:702e5,end:711e5},{type:"normal",start:711e5,end:792e5},{type:"rain",start:792e5,end:801e5},{type:"normal",start:801e5,end:954e5},{type:"rain",start:954e5,end:963e5},{type:"normal",start:963e5,end:99e6},{type:"rain",start:99e6,end:999e5},{type:"normal",start:999e5,end:1332e5},{type:"rain",start:1332e5,end:1341e5},{type:"normal",start:1341e5,end:1674e5},{type:"rain",start:1674e5,end:1683e5},{type:"normal",start:1683e5,end:1746e5},{type:"rain",start:1746e5,end:1755e5},{type:"normal",start:1755e5,end:1782e5},{type:"rain",start:1782e5,end:1791e5},{type:"normal",start:1791e5,end:1818e5},{type:"rain",start:1818e5,end:1827e5},{type:"normal",start:1827e5,end:1944e5},{type:"rain",start:1944e5,end:1953e5},{type:"normal",start:1953e5,end:2214e5},{type:"rain",start:2214e5,end:2223e5},{type:"normal",start:2223e5,end:243e6},{type:"rain",start:243e6,end:2439e5},{type:"normal",start:2439e5,end:2484e5},{type:"rain",start:2484e5,end:2493e5},{type:"normal",start:2493e5,end:2538e5},{type:"rain",start:2538e5,end:2547e5},{type:"normal",start:2547e5,end:2556e5},{type:"rain",start:2556e5,end:2565e5},{type:"normal",start:2565e5,end:2646e5},{type:"rain",start:2646e5,end:2655e5},{type:"normal",start:2655e5,end:27e7}]};
+
+  const RAIN_I18N = {
+    jp: {
+      section: "天候", eventsLabel: "今後の雨予定",
+      raining: "雨 · やむまで", clear: "次の雨まで",
+      noData: "データなし",
+      intro: "アジアリージョンの雨サイクルをリアルタイム表示。ラスラン&ストーンガルドとトランドールでは雨のパターンが異なります。",
+    },
+    en: {
+      section: "Weather", eventsLabel: "Upcoming Rain",
+      raining: "Raining · clears in", clear: "Next rain in",
+      noData: "No data",
+      intro: "Real-time rain cycle tracker for the Asia region. Laslan & Stonegard and Talandre follow different rain patterns.",
+    }
+  };
+  const rainBrowserLang = (navigator.language || '').toLowerCase();
+  const rainLang = rainBrowserLang.startsWith('ja') ? 'jp' : 'en';
+  const RT = RAIN_I18N[rainLang];
+
+  const EVENTS_WINDOW_MS = 24 * 3600 * 1000; // upcoming list covers next 24h
+  const MAX_EVENTS_SHOWN = 5;
+
+  function pad2(n) { return String(Math.floor(n)).padStart(2, '0'); }
+
+  // Mirrors questlog.gg's V(e): expands the repeating schedule into
+  // absolute-time segments covering [now, now + windowMs].
+  function expandSchedule(schedule, anchor, now, windowMs) {
+    const cycleLen = schedule[schedule.length - 1].end;
+    const windowEnd = now + windowMs;
+    const cycleIndex = Math.floor((now - anchor) / cycleLen);
+    const cyclesNeeded = Math.ceil((windowEnd - anchor) / cycleLen) - cycleIndex;
+    const segments = [];
+    for (let i = 0; i < cyclesNeeded; i++) {
+      const cycleStart = anchor + (cycleIndex + i) * cycleLen;
+      for (const seg of schedule) {
+        const segStart = cycleStart + seg.start;
+        const segEnd = cycleStart + seg.end;
+        if (segEnd >= now && segStart <= windowEnd) {
+          segments.push({ start: segStart, end: segEnd, type: seg.type });
+        }
+      }
+    }
+    return segments;
+  }
+
+  function fmtDuration(ms) {
+    const totalSec = Math.max(0, Math.round(ms / 1000));
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${m}:${pad2(s)}`;
+  }
+
+  function fmtRelative(ms) {
+    const totalMin = Math.max(0, Math.round(ms / 60000));
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    return h > 0 ? `${h}h${m}m` : `${m}m`;
+  }
+
+  function fmtClock(ts) {
+    return new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Tokyo'
+    }).format(new Date(ts));
+  }
+
+  function renderPanel(key, schedule) {
+    const now = Date.now();
+    const allEvents = expandSchedule(schedule, RAIN_ANCHOR_AS, now, EVENTS_WINDOW_MS);
+    const rainEvents = allEvents.filter(e => e.type === 'rain').sort((a, b) => a.start - b.start);
+    const current = rainEvents.find(e => e.start <= now && e.end > now);
+    const next = current || rainEvents.find(e => e.start > now);
+
+    const iconEl = document.getElementById(`rain-icon-${key}`);
+    const statusEl = document.getElementById(`rain-status-${key}`);
+    const panelEl = document.getElementById(`rain-panel-${key}`);
+
+    if (next) {
+      const isRaining = !!current;
+      panelEl.classList.toggle('is-raining', isRaining);
+      iconEl.textContent = isRaining ? '🌧️' : '☀️';
+      const label = isRaining ? RT.raining : RT.clear;
+      const target = isRaining ? current.end : next.start;
+      statusEl.innerHTML = `${label} <span class="rain-countdown-num">${fmtDuration(target - now)}</span>`;
+    } else {
+      iconEl.textContent = '☀️';
+      statusEl.textContent = RT.noData;
+    }
+
+    // Upcoming rain events list
+    const listEl = document.getElementById(`rain-events-${key}`);
+    const upcoming = rainEvents.filter(e => e.end > now).slice(0, MAX_EVENTS_SHOWN);
+    listEl.innerHTML = upcoming.map(e => `
+      <div class="rain-event-row">
+        <span class="rain-drop-icon">💧</span>
+        <span class="rain-event-time">${fmtClock(e.start)}</span>
+        <span class="rain-event-rel">${e.start <= now ? RT.raining : '+' + fmtRelative(e.start - now)}</span>
+      </div>
+    `).join('');
+
+    document.getElementById(`rain-events-label-${key}`).textContent = RT.eventsLabel;
+  }
+
+  function renderAllPanels() {
+    renderPanel('default', RAIN_SCHEDULES.default);
+    renderPanel('talandre', RAIN_SCHEDULES.talandre);
+  }
+
+  document.getElementById('rain-section-label').textContent = RT.section;
+  document.getElementById('rain-intro').textContent = RT.intro;
+  renderAllPanels();
+  setInterval(renderAllPanels, 1000);
+})();
+</script>
+</body>
+</html>
