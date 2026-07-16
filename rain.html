@@ -288,7 +288,7 @@
 
   <div class="rain-grid">
     <div class="rain-panel" id="rain-panel-default">
-      <div class="rain-panel-title">ラスラン&ストーンガルド</div>
+      <div class="rain-panel-title" id="rain-panel-title-default">ラスラン&ストーンガルド</div>
       <div class="rain-status-row">
         <span class="rain-status-icon" id="rain-icon-default">☀️</span>
         <span class="rain-status-text" id="rain-status-default">--</span>
@@ -297,7 +297,7 @@
       <div class="rain-events-list" id="rain-events-default"></div>
     </div>
     <div class="rain-panel" id="rain-panel-talandre">
-      <div class="rain-panel-title">トランドール</div>
+      <div class="rain-panel-title" id="rain-panel-title-talandre">トランドール</div>
       <div class="rain-status-row">
         <span class="rain-status-icon" id="rain-icon-talandre">☀️</span>
         <span class="rain-status-text" id="rain-status-talandre">--</span>
@@ -355,12 +355,14 @@
       raining: "雨 · やむまで", clear: "次の雨まで",
       noData: "データなし",
       intro: "アジアリージョンの雨サイクルをリアルタイム表示。ラスラン&ストーンガルドとトランドールでは雨のパターンが異なります。",
+      zoneDefault: "ラスラン&ストーンガルド", zoneTalandre: "トランドール",
     },
     en: {
       section: "Weather", eventsLabel: "Upcoming Rain",
       raining: "Raining · clears in", clear: "Next rain in",
       noData: "No data",
       intro: "Real-time rain cycle tracker for the Asia region. Laslan & Stonegard and Talandre follow different rain patterns.",
+      zoneDefault: "Laslan & Stonegard", zoneTalandre: "Talandre",
     }
   };
   const rainBrowserLang = (navigator.language || '').toLowerCase();
@@ -458,6 +460,8 @@
 
   document.getElementById('rain-section-label').textContent = RT.section;
   document.getElementById('rain-intro').textContent = RT.intro;
+  document.getElementById('rain-panel-title-default').textContent = RT.zoneDefault;
+  document.getElementById('rain-panel-title-talandre').textContent = RT.zoneTalandre;
   renderAllPanels();
   setInterval(renderAllPanels, 1000);
 })();
