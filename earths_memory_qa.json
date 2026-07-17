@@ -181,7 +181,7 @@
   {"id":180,"answer":"TRUE","text_en":"Paola is a wizard researching dimensional circles in Vienta Village.","text_ja":"パオラはヴィエンタ村で次元陣を研究している魔法使いである。","category":"Laslan"},
   {"id":181,"answer":"TRUE","text_en":"Gideon is the guard captain of Canina Village.","text_ja":"ギデオンはカニナ村の警備隊長である。","category":"Talandre"},
   {"id":182,"answer":"TRUE","text_en":"Benny was once abducted by the Akidu orcs while disguised as an orc.","text_ja":"ベニーはかつてオークに変装中にアキドゥ族のオークに拉致された。","category":"Ancient War / Lore General"},
-  {"id":183,"answer":"TRUE","text_en":"Baize, who asked for help collecting equipment lithographs, is a member of the Endless Collectors Association.","text_ja":"装備リトグラフの収集を依頼してきたバイズはエンドレスコレクター協会のメンバーである。","category":"Story / General"},
+  {"id":183,"answer":"TRUE","text_en":"Baize, who asked for help collecting equipment lithographs, is a member of the Endless Collectors Association.","text_ja":"装備ギアプリントの収集に協力を要請したベイズは、無限収集家協会に所属している。","category":"Story / General"},
   {"id":184,"answer":"TRUE","text_en":"Watch Captain Ruffello acts immediately when it involves the Arkeum.","text_ja":"警備隊長ルッフェロはアーキウムに関することには即座に行動する。","category":"Laslan"},
   {"id":185,"answer":"TRUE","text_en":"Henson is a former watch captain with the nickname One-Eyed Hawk.","text_ja":"ヘンソンは「一眼の鷹」というあだ名を持つ元警備隊長である。","category":"Laslan"},
   {"id":186,"answer":"TRUE","text_en":"Josephine Craft is investigating Queen Bellandir.","text_ja":"ジョセフィン・クラフトはクイーン・ブランディールを調査している。","category":"Stonegard"},
