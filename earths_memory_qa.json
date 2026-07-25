@@ -73,9 +73,9 @@
   {"id":72,"answer":"TRUE","text_en":"One of the key materials for the Queen Bellandir luring device is a sharp armadillo scale.","text_ja":"クイーン・ブランディール誘引装置の主要材料の一つは鋭いアルマジロのウロコである。","category":"Stonegard"},
   {"id":73,"answer":"TRUE","text_en":"The presence of Mitrans means the Land of the Dead is being purified.","text_ja":"ミトランの存在は死者の大地が浄化されていることを意味する。","category":"Stonegard"},
   {"id":74,"answer":"TRUE","text_en":"Queen Bellandir is a giant sandworm in Stonegard.","text_ja":"クイーン・ブランディールはストーンガルドの巨大なサンドワームである。","category":"Stonegard"},
-  {"id":75,"answer":"TRUE","text_en":"The largest basilisk in Stonegard is Chernobog.","text_ja":"ストーンガルド最大のバジリスクはチェルノボーグである。","category":"Stonegard"},
+  {"id":75,"answer":"TRUE","text_en":"The largest basilisk in Stonegard is Chernobog.","text_ja":"ストーンガルド最大のバジリスクはケルノボーグである。","category":"Stonegard"},
   {"id":76,"answer":"TRUE","text_en":"Lycans grow stronger near the moonstone during the Harvest Moon ritual.","text_ja":"ライカンは収穫月の儀式中、月石の近くでより強くなる。","category":"Nix"},
-  {"id":77,"answer":"TRUE","text_en":"Each of the two heads of a Two-Headed Ogre has a brain.","text_ja":"ツーヘッデッド・オーガの二つの頭はそれぞれ脳を持つ。","category":"Stonegard"},
+  {"id":77,"answer":"TRUE","text_en":"Each of the two heads of a Two-Headed Ogre has a brain.","text_ja":"双頭のオーガの二つの頭はそれぞれ脳を持つ。","category":"Stonegard"},
   {"id":78,"answer":"TRUE","text_en":"Lacune is the giant ant queen of Stonegard.","text_ja":"ラキーネはストーンガルドの巨大なアリの女王である。","category":"Stonegard"},
   {"id":79,"answer":"TRUE","text_en":"The Ant Nest is home to giant ants such as Soldier Ants, Explosive Ants, and Acid Ants.","text_ja":"アリの巣にはソルジャーアント、エクスプロッシブアント、アシッドアントなどの巨大なアリが生息している。","category":"Stonegard"},
   {"id":80,"answer":"TRUE","text_en":"Queen Bellandir was originally nothing more than a small sandworm.","text_ja":"クイーン・ブランディールはもともと小さなサンドワームに過ぎなかった。","category":"Stonegard"},
@@ -284,7 +284,7 @@
   {"id":283,"answer":"FALSE","text_en":"Marcia Richill gets along so well with her brother that they have never once fought.","text_ja":"マルシア・リシルは弟ときわめて仲が良く、一度も喧嘩をしたことがない。","category":"Story / General"},
   {"id":284,"answer":"FALSE","text_en":"The thing on Emperfang's head is a crown made by orcs.","text_ja":"エンペルファングの頭の上にあるものはオークが作った王冠である。","category":"Story / General"},
   {"id":285,"answer":"FALSE","text_en":"The name of the Diston who relays information in front of the Milestone Stele is Lunar Crier.","text_ja":"道標の石碑の前で情報を伝えるディストンの名前はルナー・クライヤーである。","category":"Venelux"},
-  {"id":286,"answer":"FALSE","text_en":"All Storage Managers are dwarves.","text_ja":"保管管理人は全員ドワーフである。","category":"Story / General"},
+  {"id":286,"answer":"FALSE","text_en":"All Storage Managers are dwarves.","text_ja":"倉庫管理人は全員ドワーフである。","category":"Story / General"},
   {"id":287,"answer":"FALSE","text_en":"There is a pet cat next to Wilson, the Herbalist at Windhill Shores.","text_ja":"ウィンドヒルの浜の薬草師ウィルソンの傍らにはペットの猫がいる。","category":"Story / General"},
   {"id":288,"answer":"FALSE","text_en":"Roen only uses crossbows.","text_ja":"ロエンはクロスボウしか使わない。","category":"Laslan"}
 ]
