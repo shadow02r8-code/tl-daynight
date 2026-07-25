@@ -138,8 +138,19 @@
     font-style: italic;
     color: var(--parchment-dim);
     opacity: 0.6;
-    padding: 30px 18px 40px;
+    padding: 30px 18px 12px;
   }
+  .site-footer-contact {
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 0 18px 36px;
+  }
+  .site-footer-contact a {
+    color: var(--brass);
+    text-decoration: none;
+    opacity: 0.85;
+  }
+  .site-footer-contact a:hover { opacity: 1; text-decoration: underline; }
 
   /* ══════════════════ HUB LAYOUT ══════════════════ */
   .hub-main { max-width: 1180px; margin: 0 auto; padding: 26px 18px 10px; }
@@ -847,6 +858,7 @@
 </main>
 
 <footer class="site-footer" data-site-i18n="footer">Solisium Compendium — Throne and Liberty 非公式攻略ツール集</footer>
+<div class="site-footer-contact"><span data-site-i18n="footer_contact">ご意見・不具合報告</span>: <a href="https://x.com/shadow02_pa" target="_blank" rel="noopener noreferrer">X (Twitter) @shadow02_pa</a></div>
 
 <script>
 /* =====================================================================
@@ -862,6 +874,7 @@
       tab_qa: "記憶の書庫",
       hub_intro: "Throne and Liberty 非公式攻略ツール集。ゲーム内の昼夜サイクルとギア強化(Watermark)ドロップ確率を、ひとつの画面でまとめて確認できます。",
       footer: "Solisium Compendium — Throne and Liberty 非公式攻略ツール集",
+      footer_contact: "ご意見・不具合報告",
     },
     en: {
       brand_eyebrow: "Solisium — Throne and Liberty",
@@ -870,6 +883,7 @@
       tab_qa: "Memory Archive",
       hub_intro: "An unofficial Throne and Liberty toolkit. Check the game's day/night cycle and gear-enhancement (Watermark) drop odds together on one screen.",
       footer: "Solisium Compendium — Unofficial Throne and Liberty Toolkit",
+      footer_contact: "Feedback & bug reports",
     }
   };
   const browserLang = (navigator.language || '').toLowerCase();
