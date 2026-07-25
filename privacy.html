@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プライバシーポリシー — Solisium Compendium</title>
+<meta name="description" content="Solisium Compendium のプライバシーポリシー — 収集する情報、外部サービス、Cookie/localStorageの利用について">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png?v=2">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void:        #0a0d14;
+    --void-2:      #11151f;
+    --void-3:      #161c28;
+    --brass:       #c9a15c;
+    --brass-bright:#f0cf8e;
+    --brass-dim:   #7a6238;
+    --indigo:      #7c6ce8;
+    --indigo-bright:#ab9dff;
+    --parchment:   #ece1c6;
+    --parchment-dim:#a89f86;
+    --ember:       #ff4f3f;
+    --line:        rgba(201,161,92,0.18);
+    --line-soft:   rgba(201,161,92,0.09);
+
+    --font-display: 'Cinzel', 'Times New Roman', serif;
+    --font-body:    'Crimson Pro', Georgia, serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { color-scheme: dark; }
+  body {
+    font-family: var(--font-body);
+    background: var(--void);
+    color: var(--parchment);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(124,108,232,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 400px at 100% 100%, rgba(201,161,92,0.06), transparent 60%);
+  }
+  a, button, input { font-family: inherit; }
+
+  /* ══════════════════ SITE CHROME (shared) ══════════════════ */
+  .site-header { position: relative; }
+  .site-header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 18px 14px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .site-brand { text-decoration: none; display: block; }
+  .site-brand-eyebrow {
+    display: block;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.72rem;
+    color: var(--brass);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .site-brand-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    color: var(--parchment);
+    text-transform: uppercase;
+    line-height: 1.15;
+  }
+  .site-brand-title .amp { color: var(--brass); }
+
+  .site-tabbar {
+    display: flex;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 18px;
+    gap: 6px;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .site-tabbar::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--brass), transparent 70%);
+  }
+  .site-tab {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 22px;
+    text-decoration: none;
+    color: var(--parchment-dim);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.18s;
+  }
+  .site-tab-icon {
+    font-size: 1.15rem;
+    line-height: 1;
+    filter: grayscale(0.6) opacity(0.7);
+    transition: filter 0.18s;
+  }
+  .site-tab:hover { color: var(--parchment); background: rgba(201,161,92,0.05); }
+  .site-tab.active {
+    color: var(--brass-bright);
+    border-bottom-color: var(--brass);
+    background: linear-gradient(180deg, rgba(201,161,92,0.10), transparent);
+  }
+  .site-tab.active .site-tab-icon { filter: none; }
+  @media (max-width: 480px) {
+    .site-tab { padding: 12px 14px; font-size: 0.74rem; }
+  }
+
+  .site-footer {
+    text-align: center;
+    font-size: 0.68rem;
+    font-style: italic;
+    color: var(--parchment-dim);
+    opacity: 0.6;
+    padding: 30px 18px 12px;
+  }
+  .site-footer-contact {
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 0 18px 36px;
+  }
+  .site-footer-contact a {
+    color: var(--brass);
+    text-decoration: none;
+    opacity: 0.85;
+  }
+  .site-footer-contact a:hover { opacity: 1; text-decoration: underline; }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 14px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--line), transparent);
+  }
+  .section-label .sub-jp {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--parchment-dim);
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.72rem;
+  }
+
+  /* ══════════════════ PRIVACY PAGE ══════════════════ */
+  .privacy-main { max-width: 780px; margin: 0 auto; padding: 26px 18px 10px; }
+  .privacy-updated {
+    font-size: 0.72rem;
+    color: var(--parchment-dim);
+    margin-bottom: 26px;
+    font-style: italic;
+  }
+
+  .privacy-block {
+    background: var(--void-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .privacy-block h2 {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--brass-bright);
+    margin-bottom: 10px;
+  }
+  .privacy-block p {
+    font-size: 0.86rem;
+    line-height: 1.85;
+    color: var(--parchment);
+    margin-bottom: 8px;
+  }
+  .privacy-block p:last-child { margin-bottom: 0; }
+  .privacy-block ul {
+    list-style: none;
+    margin: 8px 0;
+  }
+  .privacy-block li {
+    font-size: 0.86rem;
+    line-height: 1.85;
+    color: var(--parchment);
+    padding-left: 1.2em;
+    position: relative;
+  }
+  .privacy-block li::before {
+    content: '·';
+    position: absolute;
+    left: 0.2em;
+    color: var(--brass);
+    font-weight: 700;
+  }
+  .privacy-block a {
+    color: var(--brass);
+    text-decoration: none;
+  }
+  .privacy-block a:hover { text-decoration: underline; }
+  .privacy-block code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    background: var(--void-3);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--brass-bright);
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="index.html" class="site-brand">
+      <span class="site-brand-eyebrow" data-site-i18n="brand_eyebrow">ソリシウム — Throne and Liberty</span>
+      <span class="site-brand-title">SOLISIUM <span class="amp">/</span> COMPENDIUM</span>
+    </a>
+  </div>
+  <nav class="site-tabbar" aria-label="ページ切替">
+    <a href="index.html" class="site-tab"><span class="site-tab-icon">🌗</span><span data-site-i18n="tab_daynight">暦 & 強化計算</span></a>
+    <a href="rain.html" class="site-tab"><span class="site-tab-icon">🌧️</span><span data-site-i18n="tab_rain">天候</span></a>
+    <a href="qa.html" class="site-tab"><span class="site-tab-icon">📜</span><span data-site-i18n="tab_qa">記憶の書庫</span></a>
+  </nav>
+</header>
+
+<main class="privacy-main">
+  <div class="section-label"><span>プライバシーポリシー</span><span class="sub-jp">Privacy Policy</span></div>
+  <p class="privacy-updated">最終更新日: 2026年7月26日 ／ <span id="privacy-en-note">This policy is currently available in Japanese only.</span></p>
+
+  <div class="privacy-block">
+    <h2>このサイトについて</h2>
+    <p>Solisium Compendium(以下「本サイト」)は、Throne and Liberty の非公式ファンサイトです。ユーザー登録やアカウント作成は不要で、閲覧・利用にあたって個人情報の入力を求めることはありません。</p>
+  </div>
+
+  <div class="privacy-block">
+    <h2>収集する情報</h2>
+    <p>本サイトはサーバーサイドのデータベースやバックエンドを持たない静的サイトです。氏名・メールアドレス・IPアドレスなどの個人情報を本サイト独自に収集・保存することはありません。</p>
+    <p>ホスティング基盤である Cloudflare Pages により、一般的なアクセスログ(リクエスト日時・大まかな地域など)が同社のインフラ上で標準的に記録される場合がありますが、これは本サイト運営者が個別に収集・参照するものではありません。詳細は <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare のプライバシーポリシー</a> をご参照ください。</p>
+  </div>
+
+  <div class="privacy-block">
+    <h2>ブラウザのローカルストレージ(localStorage)</h2>
+    <p>「強化計算」ツールでは、入力した装備レベルやシミュレーション設定を次回訪問時にも復元できるよう、ブラウザの <code>localStorage</code> に保存しています。このデータはお使いの端末内にのみ保持され、本サイトのサーバーや第三者に送信されることはありません。ブラウザの設定からいつでも削除できます。</p>
+  </div>
+
+  <div class="privacy-block">
+    <h2>外部サービス・CDN</h2>
+    <p>本サイトは表示や機能のために、以下の外部サービスからリソースを読み込んでいます。これらのサービスへのアクセス時には、各サービスの仕様に基づき接続元情報(IPアドレス等)が相手先に送信される場合があります。</p>
+    <ul>
+      <li><a href="https://fonts.google.com/" target="_blank" rel="noopener noreferrer">Google Fonts</a> — 表示フォントの配信(全ページ)</li>
+      <li><a href="https://www.jsdelivr.com/" target="_blank" rel="noopener noreferrer">jsDelivr CDN</a> — 検索ライブラリ(Fuse.js)の配信(記憶の書庫ページのみ)</li>
+    </ul>
+    <p>本サイト自体は Google Analytics などのアクセス解析ツールや広告トラッキングを組み込んでいません。</p>
+  </div>
+
+  <div class="privacy-block">
+    <h2>Cookie について</h2>
+    <p>本サイトは独自の Cookie を発行していません。上記の外部サービス(Google Fonts、jsDelivr)が自社のポリシーに基づき Cookie を使用する可能性がありますが、これは各サービス提供元の管理下にあります。</p>
+  </div>
+
+  <div class="privacy-block">
+    <h2>ゲームデータの引用について</h2>
+    <p>本サイトに掲載しているクイズ問題・アイテム・キャラクター名などのゲーム内コンテンツの著作権は、Throne and Liberty の開発・運営元に帰属します。本サイトは同作品の非公式ファンサイトであり、公式運営元とは関係ありません。</p>
+  </div>
+
+  <div class="privacy-block">
+    <h2>ポリシーの変更</h2>
+    <p>本ポリシーの内容は、サイトの機能追加や運用状況の変化に応じて予告なく変更することがあります。重要な変更がある場合は、本ページ上部の最終更新日を更新してお知らせします。</p>
+  </div>
+
+  <div class="privacy-block">
+    <h2>お問い合わせ</h2>
+    <p>本ポリシーや本サイトの取り扱いについてご質問・ご指摘がある場合は、以下の連絡先までお願いします。</p>
+    <p><a href="https://x.com/shadow02_pa" target="_blank" rel="noopener noreferrer">X (Twitter) @shadow02_pa</a></p>
+  </div>
+</main>
+
+<footer class="site-footer" data-site-i18n="footer">Solisium Compendium — Throne and Liberty 非公式攻略ツール集</footer>
+<div class="site-footer-contact"><span data-site-i18n="footer_contact">ご意見・不具合報告</span>: <a href="https://x.com/shadow02_pa" target="_blank" rel="noopener noreferrer">X (Twitter) @shadow02_pa</a></div>
+
+<script>
+(function () {
+  const SITE_I18N = {
+    jp: {
+      brand_eyebrow: "ソリシウム — Throne and Liberty",
+      tab_daynight: "暦 & 強化計算",
+      tab_rain: "天候",
+      tab_qa: "記憶の書庫",
+      footer: "Solisium Compendium — Throne and Liberty 非公式攻略ツール集",
+      footer_contact: "ご意見・不具合報告",
+    },
+    en: {
+      brand_eyebrow: "Solisium — Throne and Liberty",
+      tab_daynight: "Almanac & Calculator",
+      tab_rain: "Weather",
+      tab_qa: "Memory Archive",
+      footer: "Solisium Compendium — Unofficial Throne and Liberty Toolkit",
+      footer_contact: "Feedback & bug reports",
+    }
+  };
+  const browserLang = (navigator.language || '').toLowerCase();
+  const lang = browserLang.startsWith('ja') ? 'jp' : 'en';
+  const T = SITE_I18N[lang];
+  document.querySelectorAll('[data-site-i18n]').forEach(el => {
+    const key = el.dataset.siteI18n;
+    if (T[key] !== undefined) el.textContent = T[key];
+  });
+})();
+</script>
+</body>
+</html>
