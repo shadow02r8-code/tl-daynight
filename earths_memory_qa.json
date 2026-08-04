@@ -42,7 +42,7 @@
   {"id":41,"answer":"TRUE","text_en":"The Sanctum of Desire is located in the Manawastes.","text_ja":"欲望の聖域はマナの荒野に位置している。","category":"Sylavean Order / Manawastes"},
   {"id":42,"answer":"TRUE","text_en":"Whisp Island is a sacred island protected by the World Tree Whisperion.","text_ja":"ウィスプ島は世界樹ウィスペリオンによって守られた神聖な島である。","category":"Whisp Island / Star-Born"},
   {"id":43,"answer":"TRUE","text_en":"Talandre is a region famous for the Breezeline.","text_ja":"トランドールはブリーズラインで有名な地域である。","category":"Talandre"},
-  {"id":44,"answer":"TRUE","text_en":"There is a passage to the Port from Stonegard Castle.","text_ja":"ストーンガルド城から港への通路がある。","category":"Stonegard"},
+  {"id":44,"answer":"FALSE","text_en":"There is a passage to the Port from Stonegard Castle.","text_ja":"ストーンガルド城から港への通路がある。","category":"Stonegard"},
   {"id":45,"answer":"TRUE","text_en":"Most of the mines in Talandre are currently occupied by the Black Anvil Dwarves.","text_ja":"トランドールの鉱山のほとんどは現在、ブラック・アンビル・ドワーフに占拠されている。","category":"Talandre"},
   {"id":46,"answer":"TRUE","text_en":"The Ruins of Turayne were originally a thriving commercial district.","text_ja":"トゥレインの遺跡は元々、繁栄した商業地区だった。","category":"Talandre"},
   {"id":47,"answer":"TRUE","text_en":"The rumors of a little monster in the Swamp of Silence were actually about Giselle, a mutated girl.","text_ja":"沈黙の沼の小さなモンスターという噂は、実際には変異した少女ジゼルのことだった。","category":"Talandre"},
